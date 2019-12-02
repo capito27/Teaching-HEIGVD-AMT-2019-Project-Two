@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.cj.jdbc.MysqlXADataSource --property \"user=root:password=root:URL=jdbc\:mysql\://db\:3306/amt:useSSL=false\" amt_pool" >> $POSTBOOT_COMMANDS
+
+echo "create-jdbc-resource --connectionpoolid amt_pool jdbc/app" >> $POSTBOOT_COMMANDS
