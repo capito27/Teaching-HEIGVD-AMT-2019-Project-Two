@@ -1,0 +1,60 @@
+version: '3.7'
+
+services:
+  treafik:
+    image: traefik
+    restart: unless-stopped
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--api.insecure=true"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  backend-auth:
+    build:
+      context: ../../images/auth
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.auth.rule=Host(`localhost`) && PathPrefix(`/api/auth`)"
+      - "traefik.http.middlewares.auth-stripprefix.stripprefix.prefixes=/api/auth"
+      - "traefik.http.routers.auth.middlewares=auth-stripprefix@docker"
+      - "traefik.http.services.auth.loadbalancer.server.port=9090"
+
+  backend-app:
+    build:
+      context: ../../images/app
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app.rule=Host(`localhost`) && PathPrefix(`/api/app`)"
+      - "traefik.http.middlewares.app-stripprefix.stripprefix.prefixes=/api/app"
+      - "traefik.http.routers.app.middlewares=app-stripprefix@docker"
+      - "traefik.http.services.app.loadbalancer.server.port=9091"
+
+  db:
+    build: ../../images/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+
+    environment:
+      MYSQL_DATABASE: amt
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.db.rule=Host(`localhost`) && PathPrefix(`/db`)"
+      - "traefik.http.middlewares.db-stripprefix.stripprefix.prefixes=/db"
+      - "traefik.http.routers.db.middlewares=db-stripprefix@docker"
+      - "traefik.http.services.auth.loadbalancer.server.port=3306"
+
+
