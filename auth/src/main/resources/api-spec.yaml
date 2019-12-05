@@ -1,0 +1,178 @@
+openapi: 3.0.0
+info:
+  title: AUTH-AMT-Project-Two
+  description: This is the API for auth purposes
+  contact:
+    email: mickael.bonjour@heig-vd.ch
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0-oas3
+servers:
+  - url: https://localhost/api/auth/
+  - url: http://localhost/api/auth/
+tags:
+  - name: unauth
+    description: Operations open to all
+  - name: users
+    description: Operations available to regular users
+  - name: admins
+    description: Secured Admin-only calls
+paths:
+  /login:
+    post:
+      tags:
+        - unauth
+      summary: Login to app
+      description: |
+        By passing in the appropriate options, you can log in to the auth endpoint
+      operationId: login
+      requestBody:
+        description: User who log in
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        "200":
+          description: confirmation of log in and JWT auth token
+  /user:
+    put:
+      tags:
+        - users
+      summary: Change user pasword
+      description: |
+        By passing the appropriate options and being authenticated, you can change your password here
+      operationId: changePassword
+      responses:
+        "200":
+          description: Password changed
+        "401":
+          description: Access token is missing or invalid
+        "403":
+          description: You are not authorized to see this ressource
+      security:
+        - bearerAuth: []
+  /users:
+    get:
+      tags:
+        - users
+      summary: Get all users, not showing roles or mails
+      description: |
+        Getting all firstnames and names of the users
+      operationId: showUsers
+      responses:
+        "200":
+          description: Users showed to the user who demands it
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/ArrayOfPublicUser'
+        "401":
+          description: Access token is missing or invalid
+        "403":
+          description: You are not authorized to see this ressource
+      security:
+        - bearerAuth: []
+  /users/{userID}:
+    put:
+      tags:
+        - admins
+      summary: Change the password of specified user
+      parameters:
+        - name: userID
+          in: path
+          description: Email of the user
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Password changed
+        "401":
+          description: Access token is missing or invalid
+        "403":
+          description: You are not authorized to see this ressource
+      security:
+        - bearerAuth: []
+  /register:
+    post:
+      tags:
+        - admins
+      requestBody:
+        description: User to register
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserFull'
+      responses:
+        "200":
+          description: User created
+        "401":
+          description: Access token is missing or invalid
+        "403":
+          description: You are not authorized to see this ressource
+      security:
+        - bearerAuth: []
+components:
+  schemas:
+    User:
+      required:
+        - email
+        - password
+      type: object
+      properties:
+        email:
+          type: string
+          example: mickael.bonjour@heig-vd.ch
+        password:
+          type: string
+          example: testPass
+    UserFull:
+      required:
+        - email
+        - firstname
+        - lastname
+        - password
+      type: object
+      properties:
+        email:
+          type: string
+          example: mickael.bonjour@heig-vd.ch
+        firstname:
+          type: string
+          example: Mickael
+        lastname:
+          type: string
+          example: Bonjour
+        password:
+          type: string
+          example: testPass
+    ArrayOfPublicUser:
+      type: array
+      items:
+        $ref: '#/components/schemas/ArrayOfPublicUser_inner'
+    ArrayOfPublicUser_inner:
+      required:
+        - firstname
+        - lastname
+      type: object
+      properties:
+        firstname:
+          type: string
+          example: Mickael
+        lastname:
+          type: string
+          example: Bonjour
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+    ForbiddenError:
+      description: You are not authorized to see this ressource
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
