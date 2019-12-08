@@ -12,17 +12,13 @@ INSERT INTO `team` (`team_name`, `team_country`) VALUES
 ('Legia Warsaw', 'Poland'),
 ('Basel', 'Switzerland');
 
-INSERT INTO `user` (username, first_name, last_name, password, email,isAdmin) VALUES 
-("user", "user", "name", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "user@mail.co",0),
-("filipe", "filipe", "fortunato", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "filipe@mail.co",0),
-("mickael", "mickael", "bonjour", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "mickael@mail.co",0),
-("pete", "pierre", "kohle", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "pete@mail.co",0),
-("john", "jonathan", "zaehringer", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "john@mail.co",0),
-("admin", "admin", "istrator", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "admin@mail.co",1),
-("user7", "user", "name", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "admin@mail.co",0),
-("user8", "user", "name", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "admin@mail.co",0),
-("user9", "user", "name", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "admin@mail.co",0),
-("user10", "user", "name", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "admin@mail.co",0);
+INSERT INTO `user` (first_name, last_name, password, email,isAdmin) VALUES 
+("user", "name", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "user@mail.co",0),
+("filipe", "fortunato", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "filipe@mail.co",0),
+("mickael", "bonjour", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "mickael@mail.co",0),
+("pierre", "kohle", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "pete@mail.co",0),
+("jonathan", "zaehringer", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "john@mail.co",0),
+("admin", "istrator", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "admin@mail.co",1),
 
 INSERT INTO `stadium` (stadium_name, stadium_location, stadium_viewer_places) VALUES
 ("Stadio Giuseppe Meazza", "Milan Italy", 80018),

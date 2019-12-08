@@ -67,7 +67,9 @@ paths:
           content:
             aplication/json:
               schema:
-                $ref: '#/components/schemas/ArrayOfPublicUser'
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
         "401":
           description: Access token is missing or invalid
         "403":
@@ -106,7 +108,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserFull'
+              $ref: '#/components/schemas/User'
       responses:
         "200":
           description: User created
@@ -119,18 +121,6 @@ paths:
 components:
   schemas:
     User:
-      required:
-        - email
-        - password
-      type: object
-      properties:
-        email:
-          type: string
-          example: mickael.bonjour@heig-vd.ch
-        password:
-          type: string
-          example: testPass
-    UserFull:
       required:
         - email
         - firstname

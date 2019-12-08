@@ -76,14 +76,12 @@ CREATE TABLE IF NOT EXISTS `team` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8 */;
 CREATE TABLE IF NOT EXISTS `user` (
-  `id_user` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(45) NOT NULL UNIQUE,
   `first_name` varchar(45) DEFAULT NULL,
   `last_name` varchar(45) DEFAULT NULL,
   `password` varchar(70) NOT NULL,
   `email` varchar(45) NOT NULL,
   `isAdmin` boolean NOT NULL DEFAULT 0,  
-PRIMARY KEY (`id_user`)
+PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

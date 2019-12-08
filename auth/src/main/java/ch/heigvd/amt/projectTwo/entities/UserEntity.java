@@ -1,9 +1,6 @@
 package ch.heigvd.amt.projectTwo.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -12,6 +9,7 @@ import java.io.Serializable;
 
 //TODO: Add lombok
 @Entity
+@Table(name="user")
 public class UserEntity implements Serializable {
 
     public String getEmail() {
