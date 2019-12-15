@@ -1,7 +1,6 @@
 package ch.heigvd.amt.projectTwo.api.endpoints;
 
 import ch.heigvd.amt.projectTwo.api.UsersApi;
-import ch.heigvd.amt.projectTwo.api.model.ArrayOfPublicUserInner;
 import ch.heigvd.amt.projectTwo.api.model.User;
 import ch.heigvd.amt.projectTwo.entities.UserEntity;
 import ch.heigvd.amt.projectTwo.repositories.UserRepository;
@@ -34,7 +33,6 @@ public class UsersApiController implements UsersApi {
         result.setEmail(userEntity.getEmail());
         result.setFirstname(userEntity.getFirstname());
         result.setLastname(userEntity.getLastname());
-        result.setPassword(userEntity.getPassword());
         return result;
     }
 }

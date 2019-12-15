@@ -1,7 +1,7 @@
 package ch.heigvd.amt.projectTwo.api.endpoints;
 
 import ch.heigvd.amt.projectTwo.api.LoginApi;
-import ch.heigvd.amt.projectTwo.api.model.User;
+import ch.heigvd.amt.projectTwo.api.model.UserLogin;
 import ch.heigvd.amt.projectTwo.entities.UserEntity;
 import ch.heigvd.amt.projectTwo.repositories.UserRepository;
 import io.swagger.annotations.ApiParam;
@@ -20,66 +20,65 @@ import java.util.List;
 
 @Controller
 public class LoginApiController implements LoginApi {
-    /*
+
     @Autowired
     UserRepository userRepository;
-    */
 
     @Override
-    public ResponseEntity<Void> login(@ApiParam(value = "", required = true) @Valid @RequestBody User user) {
-        UserEntity userEntity = toPartialUserEntity(user);
+    public ResponseEntity<Void> login(@Valid UserLogin userLogin) {
+        UserEntity userEntity = toUserEntity(userLogin);
         System.out.println(userEntity.toString());
         return (ResponseEntity<Void>) ResponseEntity.ok();
     }
 
     /*
-    public ResponseEntity<Object> createFruit(@ApiParam(value = "", required = true) @Valid @RequestBody Fruit fruit) {
-        FruitEntity newFruitEntity = toFruitEntity(fruit);
-        fruitRepository.save(newFruitEntity);
-        Long id = newFruitEntity.getId();
+        public ResponseEntity<Object> createFruit(@ApiParam(value = "", required = true) @Valid @RequestBody Fruit fruit) {
+            FruitEntity newFruitEntity = toFruitEntity(fruit);
+            fruitRepository.save(newFruitEntity);
+            Long id = newFruitEntity.getId();
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{id}")
-                .buildAndExpand(newFruitEntity.getId()).toUri();
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest().path("/{id}")
+                    .buildAndExpand(newFruitEntity.getId()).toUri();
 
-        return ResponseEntity.created(location).build();
-    }
-
-
-    public ResponseEntity<List<Fruit>> getFruits() {
-        List<Fruit> fruits = new ArrayList<>();
-        for (FruitEntity fruitEntity : fruitRepository.findAll()) {
-            fruits.add(toFruit(fruitEntity));
+            return ResponseEntity.created(location).build();
         }
 
-        Fruit staticFruit = new Fruit();
-        staticFruit.setColour("red");
-        staticFruit.setKind("banana");
-        staticFruit.setSize("medium");
-        List<Fruit> fruits = new ArrayList<>();
-        fruits.add(staticFruit);
 
-        return ResponseEntity.ok(fruits);
-    }
+        public ResponseEntity<List<Fruit>> getFruits() {
+            List<Fruit> fruits = new ArrayList<>();
+            for (FruitEntity fruitEntity : fruitRepository.findAll()) {
+                fruits.add(toFruit(fruitEntity));
+            }
+
+            Fruit staticFruit = new Fruit();
+            staticFruit.setColour("red");
+            staticFruit.setKind("banana");
+            staticFruit.setSize("medium");
+            List<Fruit> fruits = new ArrayList<>();
+            fruits.add(staticFruit);
+
+            return ResponseEntity.ok(fruits);
+        }
 
 
-    private FruitEntity toFruitEntity(Fruit fruit) {
-        FruitEntity entity = new FruitEntity();
-        entity.setColour(fruit.getColour());
-        entity.setKind(fruit.getKind());
-        entity.setSize(fruit.getSize());
-        return entity;
-    }
+        private FruitEntity toFruitEntity(Fruit fruit) {
+            FruitEntity entity = new FruitEntity();
+            entity.setColour(fruit.getColour());
+            entity.setKind(fruit.getKind());
+            entity.setSize(fruit.getSize());
+            return entity;
+        }
 
-    private Fruit toFruit(FruitEntity entity) {
-        Fruit fruit = new Fruit();
-        fruit.setColour(entity.getColour());
-        fruit.setKind(entity.getKind());
-        fruit.setSize(entity.getSize());
-        return fruit;
-    }
-    */
-    private UserEntity toPartialUserEntity(User user) {
+        private Fruit toFruit(FruitEntity entity) {
+            Fruit fruit = new Fruit();
+            fruit.setColour(entity.getColour());
+            fruit.setKind(entity.getKind());
+            fruit.setSize(entity.getSize());
+            return fruit;
+        }
+        */
+    private UserEntity toUserEntity(UserLogin user) {
         UserEntity entity = new UserEntity();
         entity.setEmail(user.getEmail());
         entity.setPassword(user.getPassword());
