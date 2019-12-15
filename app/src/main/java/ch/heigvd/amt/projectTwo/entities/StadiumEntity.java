@@ -53,6 +53,6 @@ public class StadiumEntity implements Serializable {
     public void setUserId(int userId) {
         this.userId = userId;
     }
-    @ManyToOne
+
     private int userId;
 }

@@ -26,8 +26,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.auth.rule=Host(`localhost`) && PathPrefix(`/api/auth`)"
-      - "traefik.http.middlewares.auth-stripprefix.stripprefix.prefixes=/api/auth"
-      - "traefik.http.routers.auth.middlewares=auth-stripprefix@docker"
+        #- "traefik.http.middlewares.auth-stripprefix.stripprefix.prefixes=/api/auth"
+        #- "traefik.http.routers.auth.middlewares=auth-stripprefix@docker"
       - "traefik.http.services.auth.loadbalancer.server.port=9090"
 
   backend-app:
@@ -38,8 +38,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.app.rule=Host(`localhost`) && PathPrefix(`/api/app`)"
-      - "traefik.http.middlewares.app-stripprefix.stripprefix.prefixes=/api/app"
-      - "traefik.http.routers.app.middlewares=app-stripprefix@docker"
+        #- "traefik.http.middlewares.app-stripprefix.stripprefix.prefixes=/api/app"
+        #- "traefik.http.routers.app.middlewares=app-stripprefix@docker"
       - "traefik.http.services.app.loadbalancer.server.port=9091"
 
   db:
