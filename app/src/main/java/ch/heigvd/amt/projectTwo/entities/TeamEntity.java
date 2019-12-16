@@ -2,37 +2,27 @@ package ch.heigvd.amt.projectTwo.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
-//TODO: Add lombok
+import lombok.Data;
+
+@Data
 @Entity
+@Table(name= "team")
 public class TeamEntity implements Serializable {
     @Id
+    @Column(name = "id_team")
     private int Id;
     private String name;
     private String country;
+    @Column(name = "FK_user")
+    private int userId;
 
-    public BigDecimal getId() {
-        return BigDecimal.valueOf(Id);
-    }
+    @OneToMany(mappedBy = "team1", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MatchEntity> matches1 = new ArrayList<>();
 
-    public void setId(int id) {
-        Id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
+    @OneToMany(mappedBy ="team2",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MatchEntity> matches2 = new ArrayList<>();
 }

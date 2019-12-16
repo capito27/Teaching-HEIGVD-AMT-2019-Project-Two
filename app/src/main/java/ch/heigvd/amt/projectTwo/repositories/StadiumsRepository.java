@@ -1,11 +1,13 @@
 package ch.heigvd.amt.projectTwo.repositories;
 
+import ch.heigvd.amt.projectTwo.api.model.Stadium;
 import ch.heigvd.amt.projectTwo.entities.StadiumEntity;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-/**
- * Created by Olivier Liechti on 26/07/17.
- */
+import java.util.List;
+
+@Repository
 public interface StadiumsRepository extends CrudRepository<StadiumEntity, Integer>{
-
+    List<StadiumEntity> findAllByUserId(int userId);
 }

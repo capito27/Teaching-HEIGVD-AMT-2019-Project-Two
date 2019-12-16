@@ -21,10 +21,10 @@ components:
         - id
         - name
         - location
-        - numberPlaces
+        - integerPlaces
       properties:
         id:
-          type: number
+          type: integer
           example: 1
         name:
           type: string
@@ -32,8 +32,8 @@ components:
         location:
           type: string
           example: France
-        numberPlaces:
-          type: number
+        numberOfPlaces:
+          type: integer
           example: 35000
     Team:
       type: object
@@ -43,7 +43,7 @@ components:
         - country
       properties:
         id:
-          type: number
+          type: integer
           example: 1
         name:
           type: string
@@ -62,19 +62,19 @@ components:
         - location
       properties:
         id:
-          type: number
+          type: integer
           example: 1
         team1:
           type: string
           example: /teams/{id}
         score1:
-          type: number
+          type: integer
           example: 3
         team2:
           type: string
           example: /teams/{id}
         score2:
-          type: number
+          type: integer
           example: 5
         location:
           type: string
@@ -111,8 +111,6 @@ paths:
       operationId: getMatchesByUser
       description: >
         You can get all the matches of the database (but you don't know who created them)
-      produces:
-        - application/json
       responses:
         '200':
           description: Getting all the matches
@@ -154,8 +152,6 @@ paths:
       operationId: getStadiumsByUser
       description: >
         You can get all the stadiums of the database
-      produces:
-        - application/json
       responses:
         '200':
           description: Getting all the stadiums
@@ -196,8 +192,6 @@ paths:
       operationId: getTeamsByUser
       description: >
         You can get all the teams of the database
-      produces:
-        - application/json
       responses:
         '200':
           description: Getting all the teams
@@ -242,9 +236,7 @@ paths:
           description: Id of the match asked
           required: true
           schema:
-            type: number
-      produces:
-        - application/json
+            type: integer
       responses:
         '200':
           content:
@@ -264,7 +256,7 @@ paths:
           description: Id of the match asked
           required: true
           schema:
-            type: number
+            type: integer
       responses:
         '200':
           description: The match is updated
@@ -282,13 +274,11 @@ paths:
       operationId: getTeamById
       parameters:
         - in: path
-          name: teamIdapplication/json
+          name: teamId
           description: Id of the team asked
           required: true
           schema:
-            type: number
-      produces:
-        - application/json
+            type: integer
       responses:
         '200':
           content:
@@ -308,7 +298,7 @@ paths:
           description: Id of the team asked
           required: true
           schema:
-            type: number
+            type: integer
       responses:
         '200':
           description: The team is updated
@@ -329,7 +319,7 @@ paths:
           description: Id of the team to delete
           required: true
           schema:
-            type: number
+            type: integer
       responses:
         '200':
           description: The team is deleted
@@ -347,9 +337,7 @@ paths:
           description: Id of the stadium asked
           required: true
           schema:
-            type: number
-      produces:
-        - application/json
+            type: integer
       responses:
         '200':
           content:
@@ -373,7 +361,7 @@ paths:
           description: Id of the stadium to delete
           required: true
           schema:
-            type: number
+            type: integer
       responses:
         '200':
           description: The stadium is deleted
@@ -389,7 +377,7 @@ paths:
           description: Id of the stadium asked
           required: true
           schema:
-            type: number
+            type: integer
       responses:
         '200':
           description: The stadium is updated
@@ -416,7 +404,6 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '403':
           $ref: '#/components/responses/ForbiddenError'
-
 
 servers:
   - url: 'https://localhost/api/app/'
