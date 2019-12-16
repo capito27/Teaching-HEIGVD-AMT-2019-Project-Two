@@ -52,9 +52,9 @@ CREATE TABLE IF NOT EXISTS `match` (
 /*!50503 SET character_set_client = utf8 */;
 CREATE TABLE IF NOT EXISTS `stadium` (
   `id_stadium` int(11) NOT NULL AUTO_INCREMENT,
-  `stadium_name` varchar(45) DEFAULT NULL,
-  `stadium_location` varchar(45) DEFAULT NULL,
-  `stadium_viewer_places` int(11) DEFAULT NULL,
+  `name` varchar(45) DEFAULT NULL,
+  `location` varchar(45) DEFAULT NULL,
+  `places` int(11) DEFAULT NULL,
   PRIMARY KEY (`id_stadium`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -67,8 +67,8 @@ CREATE TABLE IF NOT EXISTS `stadium` (
 /*!50503 SET character_set_client = utf8 */;
 CREATE TABLE IF NOT EXISTS `team` (
   `id_team` int(11) NOT NULL AUTO_INCREMENT,
-  `team_name` varchar(45) DEFAULT NULL,
-  `team_country` varchar(45) DEFAULT NULL,
+  `name` varchar(45) DEFAULT NULL,
+  `country` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id_team`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -76,12 +76,13 @@ CREATE TABLE IF NOT EXISTS `team` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8 */;
 CREATE TABLE IF NOT EXISTS `user` (
-  `first_name` varchar(45) DEFAULT NULL,
-  `last_name` varchar(45) DEFAULT NULL,
+  `id_user` int(11) NOT NULL UNIQUE AUTO_INCREMENT,
+  `firstname` varchar(45) DEFAULT NULL,
+  `lastname` varchar(45) DEFAULT NULL,
   `password` varchar(70) NOT NULL,
-  `email` varchar(45) NOT NULL,
+  `email` varchar(45) NOT NULL UNIQUE,
   `isAdmin` boolean NOT NULL DEFAULT 0,  
-PRIMARY KEY (`email`)
+   PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

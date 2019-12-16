@@ -25,7 +25,7 @@ printf "done !\nRebuilding prod docker environment (takes up to a minute)...\n"
 # (also, since we're deploying, we copy the 1Mil entries, so that we have enough datasets for loadtesting)
 cp docker/images/mysql/2_gen_data.sql docker/images/mysql/dump/2_gen_data.sql
 docker-compose -f docker/topologies/amt-projectTwo/docker-compose.yml --log-level ERROR down >/dev/null
-docker-compose -f docker/topologies/amt-projectTwo/docker-compose.yml --log-level ERROR up --build -d
+docker-compose -f docker/topologies/amt-projectTwo/docker-compose.yml --log-level ERROR up -d
 
 printf "API deployment in progress (should take less than 10 seconds)..."
 

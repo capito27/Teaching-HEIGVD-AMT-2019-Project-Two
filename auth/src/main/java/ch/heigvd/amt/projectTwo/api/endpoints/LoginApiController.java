@@ -28,7 +28,7 @@ public class LoginApiController implements LoginApi {
     public ResponseEntity<Void> login(@Valid UserLogin userLogin) {
         UserEntity userEntity = toUserEntity(userLogin);
         System.out.println(userEntity.toString());
-        return (ResponseEntity<Void>) ResponseEntity.ok();
+        return ResponseEntity.ok().build();
     }
 
     /*
