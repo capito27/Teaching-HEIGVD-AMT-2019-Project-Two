@@ -133,13 +133,11 @@ paths:
       operationId: showUsers
       description: >
         Getting all firstnames and names of the users
-      produces:
-        - application/json
       responses:
         '200':
           description: Users showed to the user who demands it
           content:
-            aplication/json:
+            application/json:
               schema:
                 type: array
                 items:

@@ -1,6 +1,7 @@
 package ch.heigvd.amt.projectTwo.entities;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,5 +19,9 @@ public class UserEntity implements Serializable {
     private String firstname;
     private String lastname;
     private String password;
-
+    @Column(name = "id_user")
+    @ToString.Exclude
+    private Integer id;
+    @ToString.Exclude
+    private boolean isAdmin;
 }

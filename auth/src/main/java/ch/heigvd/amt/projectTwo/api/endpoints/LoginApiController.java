@@ -4,8 +4,11 @@ import ch.heigvd.amt.projectTwo.api.LoginApi;
 import ch.heigvd.amt.projectTwo.api.model.UserLogin;
 import ch.heigvd.amt.projectTwo.entities.UserEntity;
 import ch.heigvd.amt.projectTwo.repositories.UserRepository;
+import ch.heigvd.amt.projectTwo.security.JwtTokenProvider;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,11 +27,17 @@ public class LoginApiController implements LoginApi {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
+
     @Override
     public ResponseEntity<Void> login(@Valid UserLogin userLogin) {
-        UserEntity userEntity = toUserEntity(userLogin);
-        System.out.println(userEntity.toString());
-        return ResponseEntity.ok().build();
+        try {
+            String token = jwtTokenProvider.createToken(userLogin);
+            return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, token).build();
+        } catch (IllegalArgumentException ignored) {
+            return new ResponseEntity<Void>(HttpStatus.UNAUTHORIZED);
+        }
     }
 
     /*

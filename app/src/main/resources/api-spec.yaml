@@ -282,7 +282,7 @@ paths:
       operationId: getTeamById
       parameters:
         - in: path
-          name: teamId
+          name: teamIdapplication/json
           description: Id of the team asked
           required: true
           schema:

@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Controller
 public class UsersApiController implements UsersApi {
@@ -21,21 +23,13 @@ public class UsersApiController implements UsersApi {
     @Autowired
     UserRepository userRepository;
 
-
-    @RequestMapping(value = "/users",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
     public ResponseEntity<List<User>> showUsers() {
-        List<User> users = new ArrayList<>();
-        for (UserEntity userEntity : userRepository.findAll()) {
-            users.add(toUser(userEntity));
-        }
-
+        List<User> users = StreamSupport.stream(userRepository.findAll().spliterator(), true).map(UsersApiController::toUser).collect(Collectors.toList());
         return ResponseEntity.ok(users);
     }
 
-    private User toUser(UserEntity userEntity) {
+    static private User toUser(UserEntity userEntity) {
         User result = new User();
         result.setEmail(userEntity.getEmail());
         result.setFirstname(userEntity.getFirstname());
