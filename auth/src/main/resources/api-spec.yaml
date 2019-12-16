@@ -133,6 +133,8 @@ paths:
       operationId: showUsers
       description: >
         Getting all firstnames and names of the users
+      produces:
+        - application/json
       responses:
         '200':
           description: Users showed to the user who demands it
@@ -198,7 +200,7 @@ paths:
       summary: Revoke token and logout
       responses:
         '200':
-          description: User created
+          description: User logged out
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '403':

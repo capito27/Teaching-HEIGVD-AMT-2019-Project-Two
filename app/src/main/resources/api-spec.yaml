@@ -111,6 +111,8 @@ paths:
       operationId: getMatchesByUser
       description: >
         You can get all the matches of the database (but you don't know who created them)
+      produces:
+        - application/json
       responses:
         '200':
           description: Getting all the matches
@@ -152,6 +154,8 @@ paths:
       operationId: getStadiumsByUser
       description: >
         You can get all the stadiums of the database
+      produces:
+        - application/json
       responses:
         '200':
           description: Getting all the stadiums
@@ -192,6 +196,8 @@ paths:
       operationId: getTeamsByUser
       description: >
         You can get all the teams of the database
+      produces:
+        - application/json
       responses:
         '200':
           description: Getting all the teams
@@ -237,6 +243,8 @@ paths:
           required: true
           schema:
             type: number
+      produces:
+        - application/json
       responses:
         '200':
           content:
@@ -279,6 +287,8 @@ paths:
           required: true
           schema:
             type: number
+      produces:
+        - application/json
       responses:
         '200':
           content:
@@ -338,6 +348,8 @@ paths:
           required: true
           schema:
             type: number
+      produces:
+        - application/json
       responses:
         '200':
           content:
