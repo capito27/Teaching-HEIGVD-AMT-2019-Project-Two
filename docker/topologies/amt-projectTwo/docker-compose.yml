@@ -28,7 +28,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.auth.rule=Host(`localhost`) && PathPrefix(`/api/auth`)"
-      - "traefik.http.services.auth.loadbalancer.server.port=9090"
+      - "traefik.http.services.auth.loadbalancer.server.port=8080"
 
   backend-app:
     build:
@@ -40,7 +40,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.app.rule=Host(`localhost`) && PathPrefix(`/api/app`)"
-      - "traefik.http.services.app.loadbalancer.server.port=9090"
+      - "traefik.http.services.app.loadbalancer.server.port=8080"
 
   db:
     build: ../../images/mysql
@@ -48,7 +48,6 @@ services:
     restart: always
 
     environment:
-      MYSQL_DATABASE: amt
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: user
       MYSQL_PASSWORD: pass

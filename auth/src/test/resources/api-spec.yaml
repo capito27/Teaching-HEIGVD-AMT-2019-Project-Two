@@ -1,0 +1,223 @@
+openapi: 3.0.0
+info:
+  description: This is the API for auth purposes
+  version: "1.0.0-oas3"
+  title: AUTH-AMT-Project-Two
+  contact:
+    email: mickael.bonjour@heig-vd.ch
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: unauth
+    description: Operations open to all
+  - name: users
+    description: Operations available to regular users
+  - name: admins
+    description: Secured Admin-only calls
+
+components:
+  schemas:
+    UserMinimal:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          example: mickael.bonjour@heig-vd.ch
+    User:
+      allOf:
+        - $ref: '#/components/schemas/UserMinimal'
+        - type: object
+          required:
+            - firstname
+            - lastname
+          properties:
+            firstname:
+              type: string
+              example: Mickael
+            lastname:
+              type: string
+              example: Bonjour
+    UserLogin:
+      allOf:
+        - $ref: '#/components/schemas/UserMinimal'
+        - type: object
+          required:
+            - password
+          properties:
+            password:
+              type: string
+              example: testPass
+    UserFull:
+      allOf:
+        - $ref: '#/components/schemas/User'
+        - $ref: '#/components/schemas/UserLogin'
+    AdminPasswordChange:
+      type: object
+      required:
+        - newPass
+        - repeatPass
+      properties:
+        newPass:
+          type: string
+          example: password1
+        repeatPass:
+          type: string
+          example: password1
+    UserPasswordChange:
+      allOf:
+        - $ref: '#/components/schemas/AdminPasswordChange'
+        - type: object
+          required:
+             - oldPass
+          properties:
+            oldPass:
+              type: string
+              example: password
+
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+    ForbiddenError:
+      description: You are not authorized to see this ressource
+
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+paths:
+  /login:
+    post:
+      tags:
+        - unauth
+      summary: Login to app
+      operationId: login
+      description: >
+        By passing in the appropriate options, you can log in to the auth
+        endpoint
+      responses:
+        '200':
+          description: confirmation of log in and JWT auth token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+        description: User who log in
+  /users:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - users
+      summary: Change user pasword
+      operationId: changePassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPasswordChange'
+      description: >
+        By passing the appropriate options and being authenticated, you can change your password
+        here
+      responses:
+        '200':
+          description: Password changed
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - users
+      summary: Get all users
+      operationId: showUsers
+      description: >
+        Getting all firstnames and names of the users
+      responses:
+        '200':
+          description: Users showed to the user who demands it
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+  /users/{userID}:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - admins
+      summary: Change the password of specified user
+      operationId: adminChangePassword
+      parameters:
+        - in: path
+          name: userID
+          schema:
+            type: string
+          required: true
+          description: Email of the user
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminPasswordChange'
+      responses:
+        '200':
+          description: Password changed
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+  /register:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - admins
+      summary: add a user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserFull'
+      responses:
+        '200':
+          description: User created
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+  /logout:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - users
+      summary: Revoke token and logout
+      responses:
+        '200':
+          description: User logged out
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+servers:
+  - url: 'https://localhost/api/auth/'
+  - url: 'http://localhost/api/auth/'

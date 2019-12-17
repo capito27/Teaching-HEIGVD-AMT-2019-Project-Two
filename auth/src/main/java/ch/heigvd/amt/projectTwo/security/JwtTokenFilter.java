@@ -25,10 +25,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         String token = jwtTokenProvider.extractToken(httpServletRequest);
 
-        logger.info(token);
         if (token == null || !jwtTokenProvider.validateToken(token)) {
-            logger.error("token invalid");
-            httpServletResponse.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Missing, invalid or expired Authorisation");
+            logger.error("token invalid or empty");
+            httpServletResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "Missing, invalid or expired Authorisation");
             return;
         }
 

@@ -54,22 +54,29 @@ components:
       allOf:
         - $ref: '#/components/schemas/User'
         - $ref: '#/components/schemas/UserLogin'
-    PasswordChange:
+    AdminPasswordChange:
       type: object
       required:
-        - lastPass
         - newPass
         - repeatPass
       properties:
-        lastPass:
-          type: string
-          example: password
         newPass:
           type: string
           example: password1
         repeatPass:
           type: string
           example: password1
+    UserPasswordChange:
+      allOf:
+        - $ref: '#/components/schemas/AdminPasswordChange'
+        - type: object
+          required:
+             - oldPass
+          properties:
+            oldPass:
+              type: string
+              example: password
+
   responses:
     UnauthorizedError:
       description: Access token is missing or invalid
@@ -113,7 +120,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PasswordChange'
+              $ref: '#/components/schemas/UserPasswordChange'
       description: >
         By passing the appropriate options and being authenticated, you can change your password
         here
@@ -154,6 +161,7 @@ paths:
       tags:
         - admins
       summary: Change the password of specified user
+      operationId: adminChangePassword
       parameters:
         - in: path
           name: userID
@@ -161,6 +169,12 @@ paths:
             type: string
           required: true
           description: Email of the user
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminPasswordChange'
       responses:
         '200':
           description: Password changed
