@@ -3,9 +3,7 @@ package ch.heigvd.amt.projectTwo.api.bdd.stepdefs;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-import ch.heigvd.amt.projectTwo.api.model.User;
 import ch.heigvd.amt.projectTwo.api.model.UserLogin;
-import cucumber.api.java8.En;
 import io.cucumber.datatable.DataTable;
 import io.restassured.response.Response;
 
@@ -14,6 +12,8 @@ import java.util.List;
 import cucumber.api.java8.En;
 
 public class LoginSteps extends AbstractSteps implements En {
+    private String loginUrl = "/api/auth/login";
+
     public LoginSteps() {
         Given("user wants to login with the following attributes", (DataTable userDt) -> {
             // initial request, reset context
@@ -22,11 +22,7 @@ public class LoginSteps extends AbstractSteps implements En {
             List<UserLogin> userList = userDt.asList(UserLogin.class);
             super.testContext().setPayload(userList.get(0));
         });
-        When("user login {string}", (String testContext) -> {
-            String loginUrl = "/api/auth/login";
-
-            executePost(loginUrl);
-        });
+        When("user login {string}", (String testContext) -> executePost(loginUrl));
         Then("the login {string}", (String expectedResult) -> {
             Response response = testContext().getResponse();
 
