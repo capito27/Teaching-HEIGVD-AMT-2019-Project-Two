@@ -4,6 +4,8 @@ import ch.heigvd.amt.projectTwo.api.StadiumsApi;
 import ch.heigvd.amt.projectTwo.api.model.Stadium;
 import ch.heigvd.amt.projectTwo.api.model.StadiumDetails;
 import ch.heigvd.amt.projectTwo.entities.StadiumEntity;
+import ch.heigvd.amt.projectTwo.entities.StadiumEntity;
+import ch.heigvd.amt.projectTwo.entities.TeamEntity;
 import ch.heigvd.amt.projectTwo.repositories.StadiumsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,17 +54,38 @@ public class StadiumsApiController implements StadiumsApi {
 
     @Override
     public ResponseEntity<Void> addStadium(@Valid Stadium stadium) {
-        return null;
+        StadiumEntity newStadium = toStadiumEntity(stadium);
+        //TODO: améliorer erreurs
+        newStadium.setUserId((Integer) httpServletRequest.getAttribute("user_id"));
+        stadiumsRepository.save(newStadium);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @Override
     public ResponseEntity<Void> deleteStadium(Integer stadiumId) {
-        return null;
+        StadiumEntity stadiumToDelete = stadiumsRepository.findById(stadiumId).orElse(null);
+        if(stadiumToDelete == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        if(stadiumToDelete.getUserId() != (Integer) httpServletRequest.getAttribute("user_id")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        stadiumsRepository.deleteById(stadiumId);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @Override
     public ResponseEntity<Void> updateStadium(Integer stadiumId, @Valid Stadium stadium) {
-        return null;
+        StadiumEntity newStadium = toStadiumEntity(stadium);
+        StadiumEntity stadiumInDB = stadiumsRepository.findById(stadiumId).orElse(null);
+        if(stadiumInDB == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        //TODO: améliorer erreurs
+        newStadium.setUserId((Integer) httpServletRequest.getAttribute("user_id"));
+        newStadium.setId(stadiumId);
+        stadiumsRepository.save(newStadium);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     private static StadiumDetails toStadiumDetails(StadiumEntity stadiumEntity) {
@@ -79,6 +102,14 @@ public class StadiumsApiController implements StadiumsApi {
         result.setLocation(stadiumEntity.getLocation());
         result.setName(stadiumEntity.getName());
         result.setNumberOfPlaces(stadiumEntity.getNumberOfPlaces());
+        return result;
+    }
+
+    private static StadiumEntity toStadiumEntity(Stadium stadium) {
+        StadiumEntity result = new StadiumEntity();
+        result.setLocation(stadium.getLocation());
+        result.setName(stadium.getName());
+        result.setNumberOfPlaces(stadium.getNumberOfPlaces());
         return result;
     }
 }

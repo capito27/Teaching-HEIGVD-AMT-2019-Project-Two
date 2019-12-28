@@ -77,7 +77,16 @@ public class MatchesApiController implements MatchesApi {
 
     @Override
     public ResponseEntity<Void> updateMatch(Integer matchId, @Valid Match match) {
-        return null;
+        MatchEntity newMatch = toMatchEntity(match);
+        MatchEntity matchInDB = matchesRepository.findById(matchId).orElse(null);
+        //TODO: améliorer erreurs
+        if(newMatch == null || matchInDB == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        newMatch.setUserId((Integer) httpServletRequest.getAttribute("user_id"));
+        newMatch.setId(matchId);
+        matchesRepository.save(newMatch);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     private static MatchDetails toMatchDetails(MatchEntity match) {
