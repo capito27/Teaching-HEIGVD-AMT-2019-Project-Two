@@ -13,6 +13,7 @@ import lombok.Data;
 @Table(name= "team")
 public class TeamEntity implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_team")
     private int Id;
     private String name;

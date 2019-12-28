@@ -13,6 +13,7 @@ import java.util.List;
 @Table(name= "stadium")
 public class StadiumEntity implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_stadium")
     private Integer Id;
     private String location;
