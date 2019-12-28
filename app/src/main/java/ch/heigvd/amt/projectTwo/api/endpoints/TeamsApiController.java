@@ -20,6 +20,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 
 @Controller
@@ -35,8 +36,7 @@ public class TeamsApiController implements TeamsApi {
 
     @Override
     public ResponseEntity<List<TeamDetails>> getTeamsByUser() {
-        List<TeamDetails> teams = teamsRepository.findAllByUserId((Integer) httpServletRequest.getAttribute("user_id")).parallelStream()
-                .map(TeamsApiController::toTeamDetails).collect(Collectors.toList());
+        List<TeamDetails> teams = StreamSupport.stream(teamsRepository.findAll().spliterator(), true).map(TeamsApiController::toTeamDetails).collect(Collectors.toList());
         return ResponseEntity.ok(teams);
     }
 
@@ -55,6 +55,9 @@ public class TeamsApiController implements TeamsApi {
 
     @Override
     public ResponseEntity<Void> addTeam(@Valid Team team) {
+        if(!(Boolean) httpServletRequest.getAttribute("user_admin")){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         TeamEntity newTeam = toTeamEntity(team);
         //TODO: améliorer erreurs
         newTeam.setUserId((Integer) httpServletRequest.getAttribute("user_id"));
@@ -64,6 +67,12 @@ public class TeamsApiController implements TeamsApi {
 
     @Override
     public ResponseEntity<Void> updateTeam(Integer teamId, @Valid Team team) {
+        if(!(Boolean) httpServletRequest.getAttribute("user_admin")){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        if(!(Boolean) httpServletRequest.getAttribute("user_admin")){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         TeamEntity newTeam = toTeamEntity(team);
         TeamEntity teamInDB = teamsRepository.findById(teamId).orElse(null);
         if(teamInDB == null) {
@@ -78,6 +87,9 @@ public class TeamsApiController implements TeamsApi {
 
     @Override
     public ResponseEntity<Void> deleteTeam(Integer teamId) {
+        if(!(Boolean) httpServletRequest.getAttribute("user_admin")){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         TeamEntity teamToDelete = teamsRepository.findById(teamId).orElse(null);
         if(teamToDelete == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

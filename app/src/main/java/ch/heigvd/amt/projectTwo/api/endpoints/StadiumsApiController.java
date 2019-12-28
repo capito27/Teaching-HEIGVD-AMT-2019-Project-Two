@@ -3,6 +3,7 @@ package ch.heigvd.amt.projectTwo.api.endpoints;
 import ch.heigvd.amt.projectTwo.api.StadiumsApi;
 import ch.heigvd.amt.projectTwo.api.model.Stadium;
 import ch.heigvd.amt.projectTwo.api.model.StadiumDetails;
+import ch.heigvd.amt.projectTwo.api.model.TeamDetails;
 import ch.heigvd.amt.projectTwo.entities.StadiumEntity;
 import ch.heigvd.amt.projectTwo.entities.StadiumEntity;
 import ch.heigvd.amt.projectTwo.entities.TeamEntity;
@@ -34,8 +35,7 @@ public class StadiumsApiController implements StadiumsApi {
 
     @Override
     public ResponseEntity<List<StadiumDetails>> getStadiumsByUser() {
-        List<StadiumDetails> stadiums = stadiumsRepository.findAllByUserId((Integer) httpServletRequest.getAttribute("user_id")).parallelStream()
-                .map(StadiumsApiController::toStadiumDetails).collect(Collectors.toList());
+        List<StadiumDetails> stadiums = StreamSupport.stream(stadiumsRepository.findAll().spliterator(), true).map(StadiumsApiController::toStadiumDetails).collect(Collectors.toList());
         return ResponseEntity.ok(stadiums);
     }
 
@@ -54,6 +54,9 @@ public class StadiumsApiController implements StadiumsApi {
 
     @Override
     public ResponseEntity<Void> addStadium(@Valid Stadium stadium) {
+        if(!(Boolean) httpServletRequest.getAttribute("user_admin")){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         StadiumEntity newStadium = toStadiumEntity(stadium);
         //TODO: améliorer erreurs
         newStadium.setUserId((Integer) httpServletRequest.getAttribute("user_id"));
@@ -63,6 +66,9 @@ public class StadiumsApiController implements StadiumsApi {
 
     @Override
     public ResponseEntity<Void> deleteStadium(Integer stadiumId) {
+        if(!(Boolean) httpServletRequest.getAttribute("user_admin")){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         StadiumEntity stadiumToDelete = stadiumsRepository.findById(stadiumId).orElse(null);
         if(stadiumToDelete == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -76,6 +82,9 @@ public class StadiumsApiController implements StadiumsApi {
 
     @Override
     public ResponseEntity<Void> updateStadium(Integer stadiumId, @Valid Stadium stadium) {
+        if(!(Boolean) httpServletRequest.getAttribute("user_admin")){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         StadiumEntity newStadium = toStadiumEntity(stadium);
         StadiumEntity stadiumInDB = stadiumsRepository.findById(stadiumId).orElse(null);
         if(stadiumInDB == null) {
