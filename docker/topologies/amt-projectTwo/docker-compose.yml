@@ -1,4 +1,4 @@
-version: '3.7'
+version: '2.4'
 
 services:
   traefik:
@@ -17,6 +17,9 @@ services:
       - "3306:3306"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      - "--traefik.http.routers.api.rule=Host(`api.localhost`)"
+      - "--traefik.http.routers.api.service=api@internal"
 
   backend-auth:
     build:
@@ -29,6 +32,9 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.auth.rule=Host(`localhost`) && PathPrefix(`/api/auth`)"
       - "traefik.http.services.auth.loadbalancer.server.port=8080"
+    depends_on:
+      db:
+        condition: service_healthy
 
   backend-app:
     build:
@@ -41,6 +47,9 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.app.rule=Host(`localhost`) && PathPrefix(`/api/app`)"
       - "traefik.http.services.app.loadbalancer.server.port=8080"
+    depends_on:
+      db:
+        condition: service_healthy
 
   db:
     build: ../../images/mysql
@@ -57,5 +66,8 @@ services:
       - "traefik.tcp.routers.mysql.entrypoints=mysql"
       - "traefik.tcp.routers.mysql.service=mysql"
       - "traefik.tcp.services.mysql.loadbalancer.server.port=3306"
-
+    healthcheck:
+        test: ["CMD", 'mysqladmin', 'ping', '-h', 'localhost', '-P', '3306', '-u', 'root', '-p$$MYSQL_ROOT_PASSWORD' ]
+        timeout: 20s
+        retries: 10
 

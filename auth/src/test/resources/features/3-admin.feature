@@ -14,6 +14,13 @@ Feature: Admins
       | password1 | password1  |
     Then the request 'FAILS'
 
+  Scenario: can't update someone's password if authenticated as user
+    Given user is authenticated as email "filipe@mail.co" with password "password"
+    When admin update "admin@mail.co" password with the following attributes
+      | newPass   | repeatPass |
+      | password1 | password1   |
+    Then the request 'FAILS'
+
   Scenario: can update the current password if authenticated
     Given user is authenticated as email "admin@mail.co" with password "password"
     When admin update "filipe@mail.co" password with the following attributes
@@ -23,3 +30,4 @@ Feature: Admins
     Then user can authenticate as email "filipe@mail.co" with password "password1"
     Then revert admin password update of user "filipe@mail.co" to "password"
     Then user can authenticate as email "admin@mail.co" with password "password"
+
