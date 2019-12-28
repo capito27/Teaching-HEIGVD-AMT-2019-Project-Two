@@ -1,8 +1,6 @@
 package ch.heigvd.amt.projectTwo.entities;
 
 import lombok.Data;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,6 +10,7 @@ import java.io.Serializable;
 @Table(name = "amt_app.match")
 public class MatchEntity implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_match")
     private int Id;
     private int score1;
@@ -29,5 +28,5 @@ public class MatchEntity implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FK_stadium")
-    private TeamEntity location;
+    private StadiumEntity location;
 }

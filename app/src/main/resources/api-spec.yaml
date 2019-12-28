@@ -18,14 +18,10 @@ components:
     Stadium:
       type: object
       required:
-        - id
         - name
         - location
-        - integerPlaces
+        - numberOfPlaces
       properties:
-        id:
-          type: integer
-          example: 1
         name:
           type: string
           example: Stade de France
@@ -38,13 +34,9 @@ components:
     Team:
       type: object
       required:
-        - id
         - name
         - country
       properties:
-        id:
-          type: integer
-          example: 1
         name:
           type: string
           example: FC Lausanne
@@ -54,16 +46,12 @@ components:
     Match:
       type: object
       required:
-        - id
         - team1
         - score1
         - team2
         - score2
         - location
       properties:
-        id:
-          type: integer
-          example: 1
         team1:
           type: string
           example: /teams/{id}
@@ -81,20 +69,42 @@ components:
           example: /stadiums/{id}
     MatchDetails:
       allOf:
-        - $ref: '#/components/schemas/Stadium'
         - type: object
           required:
-            - userFK
+            - id
           properties:
-            userFK:
-              type: string
-              example: /users/{id}
+            id:
+              type: integer
+              example: 1
+        - $ref: '#/components/schemas/Match'
+    StadiumDetails:
+      allOf:
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              type: integer
+              example: 1
+        - $ref: '#/components/schemas/Stadium'
+    TeamDetails:
+      allOf:
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              type: integer
+              example: 1
+        - $ref: '#/components/schemas/Team'
 
   responses:
     UnauthorizedError:
       description: Access token is missing or invalid
     ForbiddenError:
       description: You are not authorized to use this ressource
+    NotFoundError:
+      description: The ID you provided doesn't exist in our database
   securitySchemes:
     bearerAuth:
       type: http
@@ -119,7 +129,11 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Match'
+                  $ref: '#/components/schemas/MatchDetails'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
     post:
       tags:
         - users
@@ -141,6 +155,8 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '403':
           $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/ForbiddenError'
 
   /stadiums:
     get:
@@ -160,7 +176,11 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Stadium'
+                  $ref: '#/components/schemas/StadiumDetails'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
     post:
       tags:
         - admins
@@ -200,7 +220,11 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Team'
+                  $ref: '#/components/schemas/TeamDetails'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
     post:
       tags:
         - admins
@@ -244,6 +268,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Match'
           description: Update of the match completed
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
     put:
       tags:
         - users
@@ -257,6 +287,11 @@ paths:
           required: true
           schema:
             type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Match'
       responses:
         '200':
           description: The match is updated
@@ -264,6 +299,8 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '403':
           $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
 
   /teams/{teamId}:
     get:
@@ -286,6 +323,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Team'
           description: Update of the team completed
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
     put:
       tags:
         - admins
@@ -299,6 +342,11 @@ paths:
           required: true
           schema:
             type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Team'
       responses:
         '200':
           description: The team is updated
@@ -306,6 +354,8 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '403':
           $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
 
     delete:
       tags:
@@ -323,6 +373,12 @@ paths:
       responses:
         '200':
           description: The team is deleted
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
 
   /stadiums/{stadiumId}:
     get:
@@ -349,6 +405,9 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '403':
           $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
     delete:
       tags:
         - admins
@@ -365,6 +424,12 @@ paths:
       responses:
         '200':
           description: The stadium is deleted
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
     put:
       tags:
         - admins
@@ -378,6 +443,11 @@ paths:
           required: true
           schema:
             type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Stadium'
       responses:
         '200':
           description: The stadium is updated
@@ -385,7 +455,10 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '403':
           $ref: '#/components/responses/ForbiddenError'
-  /resignations:
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /cancellations:
     post:
       tags:
         - users
@@ -396,7 +469,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Match'
+              $ref: '#/components/schemas/MatchDetails'
       responses:
         '200':
           description: The Match is deleted
@@ -404,6 +477,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '403':
           $ref: '#/components/responses/ForbiddenError'
+
 
 servers:
   - url: 'https://localhost/api/app/'
