@@ -1,14 +1,17 @@
 package ch.heigvd.amt.projectTwo.security;
 
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
+import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
@@ -57,6 +60,25 @@ public class JwtTokenProvider {
         } catch (JwtException | IllegalArgumentException ignored) {
         }
         return false;
+    }
+
+    public String createTestToken(String email, boolean isAdmin, Integer id) {
+
+        Claims claims = Jwts.claims().setSubject(email);
+        claims.put("admin", isAdmin);
+        claims.put(claims.ID, id);
+
+        Date now = new Date();
+        Date validity = new Date(now.getTime() + validityInMilliseconds);
+
+        String testKey = Base64.getEncoder().encodeToString("s3cr3t-k3y".getBytes());
+
+        return Jwts.builder()//
+                .setClaims(claims)//
+                .setIssuedAt(now)//
+                .setExpiration(validity)//
+                .signWith(SignatureAlgorithm.HS256, testKey)//
+                .compact();
     }
 
 }

@@ -3,9 +3,13 @@ package ch.heigvd.amt.projectTwo.api.bdd.stepdefs;
 
 import ch.heigvd.amt.projectTwo.api.model.Match;
 import ch.heigvd.amt.projectTwo.api.model.MatchDetails;
+import ch.heigvd.amt.projectTwo.security.JwtTokenProvider;
 import cucumber.api.java8.En;
 import io.cucumber.datatable.DataTable;
 import io.restassured.response.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -15,15 +19,32 @@ public class MatchesSteps extends AbstractSteps implements En {
     private String authorization = "";
     private Integer matchAdded;
 
+    @Autowired
+    private JwtTokenProvider provider;
+
     private String matchesUrl = "/api/app/matches";
     private String cancellationsUrl = "/api/app/cancellations";
     public MatchesSteps() {
-        Given("user is authenticated" , () -> this.authorization = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBtYWlsLmNvIiwiYWRtaW4iOnRydWUsImp0aSI6NiwiaWF0IjoxNTc3NjUyMDg4LCJleHAiOjE1Nzc2NTU2ODh9.rDspZQLV5YqDlv4yKbIAdw-tUPmFDkLKs-ApoTlLqhg");
-        When("^user get matches$", () -> executeGet(matchesUrl, this.authorization));
-        When("^user update match (\\d+) with the following attributes$", (Integer matchId, DataTable matchDt) -> {
+        Given("user is authenticated with mail \"([^\"]*)\" and id \"(\\d+)\"", (String mail, Integer id) -> {
+            // initial request, reset context
+            testContext().reset();
+            this.authorization = provider.createTestToken(mail, false, id);
+        });
+        When("^user get matches$", () -> {
+            // Due to the large number of matches, we can't display them all, so we don't log the body of the response
+            setDisplayFullBodyLog(false);
+            executeGet(matchesUrl, this.authorization);
+            setDisplayFullBodyLog(true);
+        });
+
+        When("^user update match (\\d+) with the following attributes$", (Integer matchId, DataTable matchDt) ->
+
+        {
             List<Match> matchList = matchDt.asList(Match.class);
             super.testContext().setPayload(matchList.get(0));
+            Logger logger = LoggerFactory.getLogger(MatchesSteps.class);
 
+            logger.debug(Integer.toString(matchId));
             executePut(matchesUrl + "/" + matchId, this.authorization);
         });
         Then("^we can cancel this match$", () -> {
@@ -43,6 +64,14 @@ public class MatchesSteps extends AbstractSteps implements En {
 
         When("^user get match (\\d+)$", (Integer matchId) -> {
            executeGet(matchesUrl + "/" + matchId, this.authorization);
+        });
+        Then("^we can get this match$", () -> {
+            Response response = testContext().getResponse();
+            MatchDetails added = response.getBody().as(MatchDetails.class);
+            matchAdded = added.getId();
+            executeGet(matchesUrl + "/" + matchAdded, this.authorization);
+            Response getResponse = testContext().getResponse();
+            assertThat(getResponse.getStatusCode() == 200);
         });
     }
 }

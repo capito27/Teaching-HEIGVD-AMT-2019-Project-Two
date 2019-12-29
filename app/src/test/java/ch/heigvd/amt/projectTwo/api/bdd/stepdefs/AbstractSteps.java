@@ -24,6 +24,8 @@ public class AbstractSteps {
 
     private CucumberTestContext CONTEXT = CucumberTestContext.CONTEXT;
 
+    private boolean displayFullBodyLog = true;
+
     @LocalServerPort
     private int port;
 
@@ -205,9 +207,15 @@ public class AbstractSteps {
     }
 
     private void logResponse(Response response) {
+        if(displayFullBodyLog)
         response.then()
                 .log()
                 .all();
+        else {
+            response.then().log().status();
+            response.then().log().headers();
+        }
+
     }
 
     private void setPathParams(Map<String, String> queryParamas, RequestSpecification request) {
@@ -233,6 +241,10 @@ public class AbstractSteps {
         if (authorization != null && !authorization.equals("")) {
             request.header(HttpHeaders.AUTHORIZATION, "Bearer " + authorization);
         }
+    }
+
+    protected void setDisplayFullBodyLog(Boolean full){
+        this.displayFullBodyLog = full;
     }
 
 }
