@@ -1,6 +1,8 @@
 package ch.heigvd.amt.projectTwo.api.endpoints;
 
 import ch.heigvd.amt.projectTwo.api.StadiumsApi;
+import ch.heigvd.amt.projectTwo.api.exceptions.ForbiddenException;
+import ch.heigvd.amt.projectTwo.api.exceptions.NotFoundException;
 import ch.heigvd.amt.projectTwo.api.model.Stadium;
 import ch.heigvd.amt.projectTwo.api.model.StadiumDetails;
 import ch.heigvd.amt.projectTwo.api.model.TeamDetails;
@@ -40,57 +42,40 @@ public class StadiumsApiController implements StadiumsApi {
     }
 
     @Override
-    public ResponseEntity<Stadium> getStadiumById(Integer stadiumId) {
-        StadiumEntity stadiumEntity = stadiumsRepository.findById(stadiumId).orElse(null);
-        if(stadiumEntity == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        if(stadiumEntity.getUserId() != (Integer)  httpServletRequest.getAttribute("user_id")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public ResponseEntity<Stadium> getStadiumById(Integer stadiumId) throws NotFoundException {
+        StadiumEntity stadiumEntity = stadiumsRepository.findById(stadiumId).orElseThrow(() -> new NotFoundException(404, "The stadium ID : " + stadiumId + " doesn't exist on the database."));
         Stadium stadium = toStadium(stadiumEntity);
         return ResponseEntity.ok().body(stadium);
     }
 
     @Override
-    public ResponseEntity<Void> addStadium(@Valid Stadium stadium) {
+    public ResponseEntity<Void> addStadium(@Valid Stadium stadium) throws ForbiddenException {
         if(!(Boolean) httpServletRequest.getAttribute("user_admin")){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new ForbiddenException("You are not an administrator");
         }
         StadiumEntity newStadium = toStadiumEntity(stadium);
-        //TODO: améliorer erreurs
         newStadium.setUserId((Integer) httpServletRequest.getAttribute("user_id"));
         stadiumsRepository.save(newStadium);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @Override
-    public ResponseEntity<Void> deleteStadium(Integer stadiumId) {
+    public ResponseEntity<Void> deleteStadium(Integer stadiumId) throws NotFoundException, ForbiddenException {
         if(!(Boolean) httpServletRequest.getAttribute("user_admin")){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new ForbiddenException("You are not an administrator");
         }
-        StadiumEntity stadiumToDelete = stadiumsRepository.findById(stadiumId).orElse(null);
-        if(stadiumToDelete == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        if(stadiumToDelete.getUserId() != (Integer) httpServletRequest.getAttribute("user_id")) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+        StadiumEntity stadiumToDelete = stadiumsRepository.findById(stadiumId).orElseThrow(() -> new NotFoundException(404, "The stadium ID : " + stadiumId + " doesn't exist on the database."));
         stadiumsRepository.deleteById(stadiumId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @Override
-    public ResponseEntity<Void> updateStadium(Integer stadiumId, @Valid Stadium stadium) {
+    public ResponseEntity<Void> updateStadium(Integer stadiumId, @Valid Stadium stadium) throws NotFoundException, ForbiddenException {
         if(!(Boolean) httpServletRequest.getAttribute("user_admin")){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new ForbiddenException("You are not an administrator");
         }
         StadiumEntity newStadium = toStadiumEntity(stadium);
-        StadiumEntity stadiumInDB = stadiumsRepository.findById(stadiumId).orElse(null);
-        if(stadiumInDB == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        //TODO: améliorer erreurs
+        stadiumsRepository.findById(stadiumId).orElseThrow(() -> new NotFoundException(404, "The stadium ID : " + stadiumId + " doesn't exist on the database."));
         newStadium.setUserId((Integer) httpServletRequest.getAttribute("user_id"));
         newStadium.setId(stadiumId);
         stadiumsRepository.save(newStadium);

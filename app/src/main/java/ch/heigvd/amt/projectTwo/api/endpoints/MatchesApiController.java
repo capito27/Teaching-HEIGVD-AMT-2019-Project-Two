@@ -1,6 +1,8 @@
 package ch.heigvd.amt.projectTwo.api.endpoints;
 
 import ch.heigvd.amt.projectTwo.api.MatchesApi;
+import ch.heigvd.amt.projectTwo.api.exceptions.ForbiddenException;
+import ch.heigvd.amt.projectTwo.api.exceptions.NotFoundException;
 import ch.heigvd.amt.projectTwo.api.model.Match;
 import ch.heigvd.amt.projectTwo.api.model.MatchDetails;
 import ch.heigvd.amt.projectTwo.entities.MatchEntity;
@@ -51,37 +53,29 @@ public class MatchesApiController implements MatchesApi {
     }
 
     @Override
-    public ResponseEntity<Match> getMatchById(Integer matchId) {
-        MatchEntity matchEntity = matchesRepository.findById(matchId).orElse(null);
-        if(matchEntity == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public ResponseEntity<Match> getMatchById(Integer matchId) throws NotFoundException, ForbiddenException {
+        MatchEntity matchEntity = matchesRepository.findById(matchId).orElseThrow(() -> new NotFoundException(404, "The match ID : " + matchId + " doesn't exist on the database."));
         if(matchEntity.getUserId() != (Integer) httpServletRequest.getAttribute("user_id")) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new ForbiddenException("You can't get this match, it doesn't belongs to you");
         }
         Match match = toMatch(matchEntity);
         return ResponseEntity.ok().body(match);
     }
 
     @Override
-    public ResponseEntity<Void> addMatch(@Valid Match match) {
+    public ResponseEntity<Void> addMatch(@Valid Match match) throws NotFoundException {
         MatchEntity newMatch = toMatchEntity(match);
-        //TODO: améliorer erreurs
-        if(newMatch == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
         newMatch.setUserId((Integer) httpServletRequest.getAttribute("user_id"));
         matchesRepository.save(newMatch);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @Override
-    public ResponseEntity<Void> updateMatch(Integer matchId, @Valid Match match) {
+    public ResponseEntity<Void> updateMatch(Integer matchId, @Valid Match match) throws Exception{
         MatchEntity newMatch = toMatchEntity(match);
-        MatchEntity matchInDB = matchesRepository.findById(matchId).orElse(null);
-        //TODO: améliorer erreurs
-        if(newMatch == null || matchInDB == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        MatchEntity matchInDB = matchesRepository.findById(matchId).orElseThrow(() -> new NotFoundException(404, "The match ID : " + matchId + " doesn't exist on the database."));
+        if(matchInDB.getUserId() != (Integer) httpServletRequest.getAttribute("user_id")){
+            throw new ForbiddenException("The match"+ matchId +" don't belong to you, so you can't modify it");
         }
         newMatch.setUserId((Integer) httpServletRequest.getAttribute("user_id"));
         newMatch.setId(matchId);
@@ -110,19 +104,16 @@ public class MatchesApiController implements MatchesApi {
         return result;
     }
 
-    private MatchEntity toMatchEntity(Match match) {
+    private MatchEntity toMatchEntity(Match match) throws NotFoundException {
         String stadiumId = match.getLocation().split("/")[2];
         logger.info("Value from post req : " + stadiumId);
         logger.info("The match treated : " + match.toString());
         String team1Id = match.getTeam1().split("/")[2];
         String team2Id = match.getTeam2().split("/")[2];
         // TODO parseInt throws exception, catch them
-        StadiumEntity location = stadiumsRepository.findById(Integer.parseInt(stadiumId)).orElse(null);
-        TeamEntity team1 = teamsRepository.findById(Integer.parseInt(team1Id)).orElse(null);
-        TeamEntity team2 = teamsRepository.findById(Integer.parseInt(team2Id)).orElse(null);
-        if(location == null || team1 == null || team2 == null) {
-            return null;
-        }
+        StadiumEntity location = stadiumsRepository.findById(Integer.parseInt(stadiumId)).orElseThrow(() -> new NotFoundException(404, "The stadium ID : " + stadiumId + " doesn't exist on the database."));
+        TeamEntity team1 = teamsRepository.findById(Integer.parseInt(team1Id)).orElseThrow(() -> new NotFoundException(404, "The team1 ID : " + team1Id + " doesn't exist on the database."));
+        TeamEntity team2 = teamsRepository.findById(Integer.parseInt(team2Id)).orElseThrow(() -> new NotFoundException(404, "The team2 ID : " + team2Id + " doesn't exist on the database."));
         MatchEntity result = new MatchEntity();
         result.setLocation(location);
         result.setScore1(match.getScore1());

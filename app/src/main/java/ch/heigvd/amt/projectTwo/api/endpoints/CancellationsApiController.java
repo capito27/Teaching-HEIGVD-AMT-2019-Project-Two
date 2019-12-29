@@ -1,6 +1,8 @@
 package ch.heigvd.amt.projectTwo.api.endpoints;
 
 import ch.heigvd.amt.projectTwo.api.CancellationsApi;
+import ch.heigvd.amt.projectTwo.api.exceptions.ForbiddenException;
+import ch.heigvd.amt.projectTwo.api.exceptions.NotFoundException;
 import ch.heigvd.amt.projectTwo.api.model.Match;
 import ch.heigvd.amt.projectTwo.api.model.MatchDetails;
 import ch.heigvd.amt.projectTwo.entities.MatchEntity;
@@ -34,30 +36,26 @@ public class CancellationsApiController implements CancellationsApi {
     Logger logger = LoggerFactory.getLogger(CancellationsApiController.class);
 
     @Override
-    public ResponseEntity<Void> deleteMatch(@Valid MatchDetails matchDetails) {
+    public ResponseEntity<Void> deleteMatch(@Valid MatchDetails matchDetails) throws NotFoundException, ForbiddenException {
         MatchEntity matchToDelete = toMatchEntity(matchDetails);
-        MatchEntity matchInDB = matchesRepository.findById(matchDetails.getId()).orElse(null);
-
-        if(matchToDelete == null || matchInDB == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        MatchEntity matchInDB = matchesRepository.findById(matchDetails.getId()).orElseThrow(() -> new NotFoundException(404, "The match ID : " + matchToDelete.getId() + " doesn't exist on the database."));
         if(matchInDB.getUserId() != (Integer) httpServletRequest.getAttribute("user_id")) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new ForbiddenException("This match doesn't belong to you");
         }
         matchesRepository.deleteById(matchToDelete.getId());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    private MatchEntity toMatchEntity(MatchDetails match) {
+    private MatchEntity toMatchEntity(MatchDetails match) throws NotFoundException {
         String stadiumId = match.getLocation().split("/")[2];
         logger.info("Value from post req : " + stadiumId);
         logger.info("The match treated : " + match.toString());
         String team1Id = match.getTeam1().split("/")[2];
         String team2Id = match.getTeam2().split("/")[2];
         // TODO parseInt throws exception, catch them
-        StadiumEntity location = stadiumsRepository.findById(Integer.parseInt(stadiumId)).orElse(null);
-        TeamEntity team1 = teamsRepository.findById(Integer.parseInt(team1Id)).orElse(null);
-        TeamEntity team2 = teamsRepository.findById(Integer.parseInt(team2Id)).orElse(null);
+        StadiumEntity location = stadiumsRepository.findById(Integer.parseInt(stadiumId)).orElseThrow(() -> new NotFoundException(404, "The stadium ID : " + stadiumId + " doesn't exist on the database."));
+        TeamEntity team1 = teamsRepository.findById(Integer.parseInt(team1Id)).orElseThrow(() -> new NotFoundException(404, "The team 1 ID : " + team1Id + " doesn't exist on the database."));
+        TeamEntity team2 = teamsRepository.findById(Integer.parseInt(team2Id)).orElseThrow(() -> new NotFoundException(404, "The team 2 ID : " + team2Id + " doesn't exist on the database."));
         if(location == null || team1 == null || team2 == null) {
             return null;
         }

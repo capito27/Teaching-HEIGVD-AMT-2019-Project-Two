@@ -49,6 +49,7 @@
                                 <useBeanValidation>true</useBeanValidation>
                                 <interfaceOnly>true</interfaceOnly>
                                 <delegatePattern>false</delegatePattern>
+                                <unhandledException>true</unhandledException>
                                 <apiPackage>ch.heigvd.amt.projectTwo.api</apiPackage>
                                 <configPackage>ch.heigvd.amt.projectTwo.config</configPackage>
                                 <basePackage>ch.heigvd.amt.projectTwo</basePackage>

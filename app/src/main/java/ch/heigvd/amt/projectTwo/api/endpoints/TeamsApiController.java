@@ -2,6 +2,8 @@ package ch.heigvd.amt.projectTwo.api.endpoints;
 
 
 import ch.heigvd.amt.projectTwo.api.TeamsApi;
+import ch.heigvd.amt.projectTwo.api.exceptions.ForbiddenException;
+import ch.heigvd.amt.projectTwo.api.exceptions.NotFoundException;
 import ch.heigvd.amt.projectTwo.api.model.Team;
 import ch.heigvd.amt.projectTwo.api.model.TeamDetails;
 import ch.heigvd.amt.projectTwo.entities.MatchEntity;
@@ -41,12 +43,9 @@ public class TeamsApiController implements TeamsApi {
     }
 
     @Override
-    public ResponseEntity<Team> getTeamById(Integer teamId) {
-        TeamEntity teamEntity = teamsRepository.findById(teamId).orElse(null);
-        if(teamEntity == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        if(teamEntity.getUserId() != (Integer)  httpServletRequest.getAttribute("user_id")) {
+    public ResponseEntity<Team> getTeamById(Integer teamId) throws NotFoundException {
+        TeamEntity teamEntity = teamsRepository.findById(teamId).orElseThrow(() -> new NotFoundException(404, "The team ID : " + teamId + " doesn't exist on the database."));
+        if (teamEntity.getUserId() != (Integer) httpServletRequest.getAttribute("user_id")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         Team teams = toTeam(teamEntity);
@@ -54,31 +53,23 @@ public class TeamsApiController implements TeamsApi {
     }
 
     @Override
-    public ResponseEntity<Void> addTeam(@Valid Team team) {
+    public ResponseEntity<Void> addTeam(@Valid Team team) throws ForbiddenException {
         if(!(Boolean) httpServletRequest.getAttribute("user_admin")){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new ForbiddenException("You are not an administrator");
         }
         TeamEntity newTeam = toTeamEntity(team);
-        //TODO: améliorer erreurs
         newTeam.setUserId((Integer) httpServletRequest.getAttribute("user_id"));
         teamsRepository.save(newTeam);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @Override
-    public ResponseEntity<Void> updateTeam(Integer teamId, @Valid Team team) {
+    public ResponseEntity<Void> updateTeam(Integer teamId, @Valid Team team) throws ForbiddenException, NotFoundException {
         if(!(Boolean) httpServletRequest.getAttribute("user_admin")){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        if(!(Boolean) httpServletRequest.getAttribute("user_admin")){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new ForbiddenException("You are not an administrator");
         }
         TeamEntity newTeam = toTeamEntity(team);
-        TeamEntity teamInDB = teamsRepository.findById(teamId).orElse(null);
-        if(teamInDB == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        //TODO: améliorer erreurs
+        TeamEntity teamInDB = teamsRepository.findById(teamId).orElseThrow(() -> new NotFoundException(404, "The team ID : " + teamId + " doesn't exist on the database."));
         newTeam.setUserId((Integer) httpServletRequest.getAttribute("user_id"));
         newTeam.setId(teamId);
         teamsRepository.save(newTeam);
@@ -86,17 +77,11 @@ public class TeamsApiController implements TeamsApi {
     }
 
     @Override
-    public ResponseEntity<Void> deleteTeam(Integer teamId) {
+    public ResponseEntity<Void> deleteTeam(Integer teamId) throws NotFoundException, ForbiddenException {
         if(!(Boolean) httpServletRequest.getAttribute("user_admin")){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new ForbiddenException("You are not an administrator");
         }
-        TeamEntity teamToDelete = teamsRepository.findById(teamId).orElse(null);
-        if(teamToDelete == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        if(teamToDelete.getUserId() != (Integer) httpServletRequest.getAttribute("user_id")) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+        TeamEntity teamToDelete = teamsRepository.findById(teamId).orElseThrow(() -> new NotFoundException(404, "The team ID : " + teamId + " doesn't exist on the database."));
         teamsRepository.deleteById(teamId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
