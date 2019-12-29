@@ -63,11 +63,11 @@ public class MatchesApiController implements MatchesApi {
     }
 
     @Override
-    public ResponseEntity<Void> addMatch(@Valid Match match) throws NotFoundException {
+    public ResponseEntity<MatchDetails> addMatch(@Valid Match match) throws NotFoundException {
         MatchEntity newMatch = toMatchEntity(match);
         newMatch.setUserId((Integer) httpServletRequest.getAttribute("user_id"));
         matchesRepository.save(newMatch);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK).body(toMatchDetails(newMatch));
     }
 
     @Override

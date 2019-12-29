@@ -53,14 +53,14 @@ public class TeamsApiController implements TeamsApi {
     }
 
     @Override
-    public ResponseEntity<Void> addTeam(@Valid Team team) throws ForbiddenException {
+    public ResponseEntity<TeamDetails> addTeam(@Valid Team team) throws ForbiddenException {
         if(!(Boolean) httpServletRequest.getAttribute("user_admin")){
             throw new ForbiddenException("You are not an administrator");
         }
         TeamEntity newTeam = toTeamEntity(team);
         newTeam.setUserId((Integer) httpServletRequest.getAttribute("user_id"));
         teamsRepository.save(newTeam);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK).body(toTeamDetails(newTeam));
     }
 
     @Override

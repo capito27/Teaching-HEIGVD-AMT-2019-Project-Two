@@ -49,14 +49,14 @@ public class StadiumsApiController implements StadiumsApi {
     }
 
     @Override
-    public ResponseEntity<Void> addStadium(@Valid Stadium stadium) throws ForbiddenException {
+    public ResponseEntity<StadiumDetails> addStadium(@Valid Stadium stadium) throws ForbiddenException {
         if(!(Boolean) httpServletRequest.getAttribute("user_admin")){
             throw new ForbiddenException("You are not an administrator");
         }
         StadiumEntity newStadium = toStadiumEntity(stadium);
         newStadium.setUserId((Integer) httpServletRequest.getAttribute("user_id"));
         stadiumsRepository.save(newStadium);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK).body(toStadiumDetails(newStadium));
     }
 
     @Override

@@ -151,6 +151,10 @@ paths:
       responses:
         '200':
           description: Match added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MatchDetails'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '403':
@@ -198,6 +202,10 @@ paths:
       responses:
         '200':
           description: Stadium added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StadiumDetails'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '403':
@@ -242,6 +250,10 @@ paths:
       responses:
         '200':
           description: Team added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamDetails'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '403':
