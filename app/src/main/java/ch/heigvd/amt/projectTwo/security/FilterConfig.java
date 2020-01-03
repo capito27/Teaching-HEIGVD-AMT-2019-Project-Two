@@ -17,7 +17,8 @@ public class FilterConfig {
 
         registrationBean.setFilter(new JwtTokenFilter(provider));
 
-        registrationBean.addUrlPatterns("/*");
+        registrationBean.addUrlPatterns("/matches");
+        registrationBean.addUrlPatterns("/matches/*");
 
         return registrationBean;
 
