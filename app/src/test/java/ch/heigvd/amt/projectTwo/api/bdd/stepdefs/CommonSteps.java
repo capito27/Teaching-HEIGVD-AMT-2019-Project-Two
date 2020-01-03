@@ -9,6 +9,7 @@ import static org.assertj.core.api.Assertions.fail;
 public class CommonSteps extends AbstractSteps implements En {
 
     public CommonSteps() {
+
         Then("the request {string}", (String expectedResult) -> {
             Response response = testContext().getResponse();
 
