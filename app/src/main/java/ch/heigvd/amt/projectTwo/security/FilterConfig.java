@@ -17,7 +17,15 @@ public class FilterConfig {
 
         registrationBean.setFilter(new JwtTokenFilter(provider));
 
-        registrationBean.addUrlPatterns("*");
+        registrationBean.addUrlPatterns(
+                "/cancellations",
+                "/matches",
+                "/matches/*",
+                "/stadiums",
+                "/stadiums/*",
+                "/teams",
+                "/teams/*"
+                );
 
         return registrationBean;
 

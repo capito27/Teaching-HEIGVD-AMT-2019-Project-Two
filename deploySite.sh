@@ -4,7 +4,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 TIME_TO_WAIT=60
 WAIT_INCREMENTS=5
-HEALTHY_CHECK_VALID_COUNT=4
+HEALTHY_CHECK_VALID_COUNT=5
 
 cd $DIR
 

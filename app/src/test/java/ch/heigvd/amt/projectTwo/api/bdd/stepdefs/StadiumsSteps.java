@@ -39,9 +39,7 @@ public class StadiumsSteps extends AbstractSteps implements En {
 
         When("^user get stadiums$", () -> {
             // Due to the large number of stadiums, we can't display them all, so we don't log the body of the response
-            setDisplayFullBodyLog(false);
             executeGet(stadiumsUrl, this.authorization);
-            setDisplayFullBodyLog(true);
         });
 
         When("^user update stadium (\\d+) with the following attributes$", (Integer stadiumId, DataTable stadiumDt) ->
