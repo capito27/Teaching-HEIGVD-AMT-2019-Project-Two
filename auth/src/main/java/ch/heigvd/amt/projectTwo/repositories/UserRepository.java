@@ -9,4 +9,7 @@ import org.springframework.data.repository.CrudRepository;
 public interface UserRepository extends CrudRepository<UserEntity, String> {
     UserEntity findByEmail(String email);
 
+    long countByEmail(String email);
+
+
 }

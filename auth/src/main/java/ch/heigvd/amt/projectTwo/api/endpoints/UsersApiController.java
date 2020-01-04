@@ -30,7 +30,7 @@ public class UsersApiController implements UsersApi {
     @Autowired
     HttpServletRequest httpServletRequest;
 
-    private Logger logger = LoggerFactory.getLogger(JwtTokenFilter.class);
+    private Logger logger = LoggerFactory.getLogger(UsersApiController.class);
 
     @Override
     public ResponseEntity<List<User>> showUsers() {

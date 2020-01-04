@@ -6,7 +6,7 @@ Feature: Login
       | filipe@mail.co | password |
 
     When user login 'WITH ALL REQUIRED FIELDS'
-    Then the login 'IS SUCCESSFUL'
+    Then the request 'IS SUCCESSFUL'
 
   Scenario: Loging in with the wrong password fails
     Given user wants to login with the following attributes
@@ -14,7 +14,7 @@ Feature: Login
       | filipe@mail.co | password2 |
 
     When user login 'WITH ALL REQUIRED FIELDS'
-    Then the login 'FAILS'
+    Then the request 'FAILS'
 
   Scenario: Loging in with the wrong email fails
     Given user wants to login with the following attributes
@@ -22,7 +22,7 @@ Feature: Login
       | filipe@mai3l.co | password |
 
     When user login 'WITH ALL REQUIRED FIELDS'
-    Then the login 'FAILS'
+    Then the request 'FAILS'
 
   Scenario: Loging in with the wrong email and password fails
     Given user wants to login with the following attributes
@@ -30,4 +30,4 @@ Feature: Login
       | filipe@mai4l.co | password4 |
 
     When user login 'WITH ALL REQUIRED FIELDS'
-    Then the login 'FAILS'
+    Then the request 'FAILS'

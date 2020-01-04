@@ -14,6 +14,14 @@ tags:
   - name: admins
     description: Secured Admin-only calls
 components:
+  links:
+    PaginateMatchRequest:
+      description: >
+        This link with grab another set of matches
+      operationId: getMatchesByUser
+      parameters:
+        page: '$request.path.page'
+        pageSize: '$request.path.page'
   schemas:
     Stadium:
       type: object
@@ -119,6 +127,21 @@ paths:
         - bearerAuth: []
       summary: Get all matches
       operationId: getMatchesByUser
+      parameters:
+        - in: query
+          name: page
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: pageSize
+          description: number of elements per page
+          required: false
+          schema:
+            type: integer
+            default: 10
       description: >
         You can get all the matches of the database (but you don't know who created them)
       responses:
@@ -130,6 +153,16 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/MatchDetails'
+          links:
+            NextLink:
+              $ref: '@/components/links/PaginateMatchRequest'
+            LastLink:
+              $ref: '@/components/links/PaginateMatchRequest'
+            FirstLink:
+              $ref: '@/components/links/PaginateMatchRequest'
+            PrevLink:
+              $ref: '@/components/links/PaginateMatchRequest'
+
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '403':

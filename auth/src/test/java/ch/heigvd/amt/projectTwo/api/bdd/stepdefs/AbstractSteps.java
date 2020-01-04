@@ -35,6 +35,9 @@ public class AbstractSteps {
         return CONTEXT;
     }
 
+
+    protected String authorization;
+
     protected void executePost(String apiPath) {
         executePost(apiPath, null, null, null);
     }

@@ -54,6 +54,13 @@ components:
       allOf:
         - $ref: '#/components/schemas/User'
         - $ref: '#/components/schemas/UserLogin'
+        - type: object
+          required:
+            - isAdmin
+          properties:
+            isAdmin:
+              type: boolean
+              example: true
     AdminPasswordChange:
       type: object
       required:

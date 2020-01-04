@@ -54,6 +54,13 @@ components:
       allOf:
         - $ref: '#/components/schemas/User'
         - $ref: '#/components/schemas/UserLogin'
+        - type: object
+          required:
+            - isAdmin
+          properties:
+            isAdmin:
+              type: boolean
+              example: true
     AdminPasswordChange:
       type: object
       required:
@@ -71,7 +78,7 @@ components:
         - $ref: '#/components/schemas/AdminPasswordChange'
         - type: object
           required:
-             - oldPass
+            - oldPass
           properties:
             oldPass:
               type: string
@@ -198,21 +205,6 @@ paths:
       responses:
         '200':
           description: User created
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-
-  /logout:
-    get:
-      security:
-        - bearerAuth: []
-      tags:
-        - users
-      summary: Revoke token and logout
-      responses:
-        '200':
-          description: User logged out
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '403':
