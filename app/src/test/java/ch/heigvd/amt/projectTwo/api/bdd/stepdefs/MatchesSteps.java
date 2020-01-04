@@ -31,10 +31,7 @@ public class MatchesSteps extends AbstractSteps implements En {
             this.authorization = provider.createTestToken(mail, false, id);
         });
         When("^user get matches$", () -> {
-            // Due to the large number of matches, we can't display them all, so we don't log the body of the response
-            setDisplayFullBodyLog(false);
             executeGet(matchesUrl, this.authorization);
-            setDisplayFullBodyLog(true);
         });
 
         When("^user update match (\\d+) with the following attributes$", (Integer matchId, DataTable matchDt) ->

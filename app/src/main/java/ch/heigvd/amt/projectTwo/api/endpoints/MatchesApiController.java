@@ -11,19 +11,20 @@ import ch.heigvd.amt.projectTwo.entities.TeamEntity;
 import ch.heigvd.amt.projectTwo.repositories.MatchesRepository;
 import ch.heigvd.amt.projectTwo.repositories.StadiumsRepository;
 import ch.heigvd.amt.projectTwo.repositories.TeamsRepository;
-import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-07-26T19:36:34.802Z")
@@ -46,16 +47,47 @@ public class MatchesApiController implements MatchesApi {
     Logger logger = LoggerFactory.getLogger(MatchesApiController.class);
 
     @Override
-    public ResponseEntity<List<MatchDetails>> getMatchesByUser() {
-        List<MatchDetails> matches = matchesRepository.findAllByUserId((Integer) httpServletRequest.getAttribute("user_id")).parallelStream()
+    public ResponseEntity<List<MatchDetails>> getMatchesByUser(@Valid Integer page, @Valid Integer pageSize) throws Exception {
+        int userId = (Integer) httpServletRequest.getAttribute("user_id");
+
+        long totalMatchCount = matchesRepository.countByUserId(userId);
+        long lastPageNumber = totalMatchCount / pageSize + ((totalMatchCount % pageSize == 0) ? 0 : 1);
+
+        StringJoiner linkHeader = new StringJoiner(", ");
+
+        String str = constructPageUri(httpServletRequest.getRequestURI(), "next", page + 1, pageSize, lastPageNumber);
+        if (str != "") {
+            linkHeader.add(str);
+        }
+
+        if (page != lastPageNumber) {
+            linkHeader.add(constructPageUri(httpServletRequest.getRequestURI(), "last", lastPageNumber, pageSize, lastPageNumber));
+        }
+
+        if (page != 1) {
+            linkHeader.add(constructPageUri(httpServletRequest.getRequestURI(), "first", 1, pageSize, lastPageNumber));
+        }
+
+        str = constructPageUri(httpServletRequest.getRequestURI(), "prev", page - 1, pageSize, lastPageNumber);
+        if (str != "") {
+            linkHeader.add(str);
+        }
+
+        List<MatchDetails> matches = matchesRepository.findByUserId((Integer) httpServletRequest.getAttribute("user_id"), PageRequest.of(page-1, pageSize)).parallelStream()
                 .map(MatchesApiController::toMatchDetails).collect(Collectors.toList());
-        return ResponseEntity.ok(matches);
+        return ResponseEntity.ok().header(HttpHeaders.LINK, linkHeader.toString()).body(matches);
+    }
+
+    private String constructPageUri(String ressource, String rel, long page, int size, long maxPage) {
+        if (page > maxPage || page <= 0)
+            return "";
+        return String.format("<%s?page=%d&pageSize=%d>; rel=\"%s\"", ressource, page, size, rel);
     }
 
     @Override
     public ResponseEntity<Match> getMatchById(Integer matchId) throws NotFoundException, ForbiddenException {
         MatchEntity matchEntity = matchesRepository.findById(matchId).orElseThrow(() -> new NotFoundException(404, "The match ID : " + matchId + " doesn't exist on the database."));
-        if(matchEntity.getUserId() != (Integer) httpServletRequest.getAttribute("user_id")) {
+        if (matchEntity.getUserId() != (Integer) httpServletRequest.getAttribute("user_id")) {
             throw new ForbiddenException("You can't get this match, it doesn't belongs to you");
         }
         Match match = toMatch(matchEntity);
@@ -71,11 +103,11 @@ public class MatchesApiController implements MatchesApi {
     }
 
     @Override
-    public ResponseEntity<Void> updateMatch(Integer matchId, @Valid Match match) throws Exception{
+    public ResponseEntity<Void> updateMatch(Integer matchId, @Valid Match match) throws Exception {
         MatchEntity newMatch = toMatchEntity(match);
         MatchEntity matchInDB = matchesRepository.findById(matchId).orElseThrow(() -> new NotFoundException(404, "The match ID : " + matchId + " doesn't exist on the database."));
-        if(matchInDB.getUserId() != (Integer) httpServletRequest.getAttribute("user_id")){
-            throw new ForbiddenException("The match"+ matchId +" don't belong to you, so you can't modify it");
+        if (matchInDB.getUserId() != (Integer) httpServletRequest.getAttribute("user_id")) {
+            throw new ForbiddenException("The match" + matchId + " don't belong to you, so you can't modify it");
         }
         newMatch.setUserId((Integer) httpServletRequest.getAttribute("user_id"));
         newMatch.setId(matchId);
