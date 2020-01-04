@@ -18,12 +18,10 @@ public class TeamEntity implements Serializable {
     private int Id;
     private String name;
     private String country;
-    @Column(name = "FK_user")
-    private int userId;
 
-    @OneToMany(mappedBy = "team1", cascade = CascadeType.ALL, orphanRemoval = true)
+    /*@OneToMany(mappedBy = "team1", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MatchEntity> matches1 = new ArrayList<>();
 
     @OneToMany(mappedBy ="team2",cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MatchEntity> matches2 = new ArrayList<>();
+    private List<MatchEntity> matches2 = new ArrayList<>();*/
 }

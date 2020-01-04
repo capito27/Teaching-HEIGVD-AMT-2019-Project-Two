@@ -50,7 +50,6 @@ CREATE TABLE IF NOT EXISTS `match` (
 /*!50503 SET character_set_client = utf8 */;
 CREATE TABLE IF NOT EXISTS `stadium` (
   `id_stadium` int(11) NOT NULL AUTO_INCREMENT,
-  `FK_user` int(11) NOT NULL,
   `name` varchar(45) DEFAULT NULL,
   `location` varchar(45) DEFAULT NULL,
   `places` int(11) DEFAULT NULL,
@@ -66,7 +65,6 @@ CREATE TABLE IF NOT EXISTS `stadium` (
 /*!50503 SET character_set_client = utf8 */;
 CREATE TABLE IF NOT EXISTS `team` (
   `id_team` int(11) NOT NULL AUTO_INCREMENT,
-  `FK_user` int(11) NOT NULL,
   `name` varchar(45) DEFAULT NULL,
   `country` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id_team`)

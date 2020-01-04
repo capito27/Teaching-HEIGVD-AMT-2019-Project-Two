@@ -45,9 +45,6 @@ public class TeamsApiController implements TeamsApi {
     @Override
     public ResponseEntity<Team> getTeamById(Integer teamId) throws NotFoundException {
         TeamEntity teamEntity = teamsRepository.findById(teamId).orElseThrow(() -> new NotFoundException(404, "The team ID : " + teamId + " doesn't exist on the database."));
-        if (teamEntity.getUserId() != (Integer) httpServletRequest.getAttribute("user_id")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
         Team teams = toTeam(teamEntity);
         return ResponseEntity.ok().body(teams);
     }
@@ -58,7 +55,6 @@ public class TeamsApiController implements TeamsApi {
             throw new ForbiddenException("You are not an administrator");
         }
         TeamEntity newTeam = toTeamEntity(team);
-        newTeam.setUserId((Integer) httpServletRequest.getAttribute("user_id"));
         teamsRepository.save(newTeam);
         return ResponseEntity.status(HttpStatus.OK).body(toTeamDetails(newTeam));
     }
@@ -70,7 +66,6 @@ public class TeamsApiController implements TeamsApi {
         }
         TeamEntity newTeam = toTeamEntity(team);
         TeamEntity teamInDB = teamsRepository.findById(teamId).orElseThrow(() -> new NotFoundException(404, "The team ID : " + teamId + " doesn't exist on the database."));
-        newTeam.setUserId((Integer) httpServletRequest.getAttribute("user_id"));
         newTeam.setId(teamId);
         teamsRepository.save(newTeam);
         return ResponseEntity.status(HttpStatus.OK).build();

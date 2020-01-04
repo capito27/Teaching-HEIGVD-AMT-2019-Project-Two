@@ -9,5 +9,4 @@ import java.util.List;
 
 @Repository
 public interface StadiumsRepository extends CrudRepository<StadiumEntity, Integer>{
-    List<StadiumEntity> findAllByUserId(int userId);
 }

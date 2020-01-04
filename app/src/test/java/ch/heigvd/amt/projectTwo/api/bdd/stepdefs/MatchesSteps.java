@@ -16,9 +16,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MatchesSteps extends AbstractSteps implements En {
-    private String authorization = "";
-    private Integer matchAdded;
 
+    private String authorization="";
+
+    private Integer matchAdded;
     @Autowired
     private JwtTokenProvider provider;
 
@@ -30,6 +31,7 @@ public class MatchesSteps extends AbstractSteps implements En {
             testContext().reset();
             this.authorization = provider.createTestToken(mail, false, id);
         });
+
         When("^user get matches$", () -> {
             // Due to the large number of matches, we can't display them all, so we don't log the body of the response
             setDisplayFullBodyLog(false);

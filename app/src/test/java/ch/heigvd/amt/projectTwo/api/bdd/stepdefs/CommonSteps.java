@@ -1,15 +1,17 @@
 package ch.heigvd.amt.projectTwo.api.bdd.stepdefs;
 
+import ch.heigvd.amt.projectTwo.security.JwtTokenProvider;
 import cucumber.api.java8.En;
 import io.restassured.response.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
+
+
 public class CommonSteps extends AbstractSteps implements En {
-
     public CommonSteps() {
-
         Then("the request {string}", (String expectedResult) -> {
             Response response = testContext().getResponse();
 

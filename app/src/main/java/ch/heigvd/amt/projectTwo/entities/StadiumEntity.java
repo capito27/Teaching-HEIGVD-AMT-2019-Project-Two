@@ -20,9 +20,7 @@ public class StadiumEntity implements Serializable {
     private String name;
     @Column(name = "places")
     private int numberOfPlaces;
-    @Column(name = "FK_user")
-    private int userId;
 
-    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MatchEntity> matches = new ArrayList<>();
+    /*@OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MatchEntity> matches = new ArrayList<>();*/
 }

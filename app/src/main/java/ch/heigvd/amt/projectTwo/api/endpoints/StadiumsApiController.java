@@ -54,7 +54,6 @@ public class StadiumsApiController implements StadiumsApi {
             throw new ForbiddenException("You are not an administrator");
         }
         StadiumEntity newStadium = toStadiumEntity(stadium);
-        newStadium.setUserId((Integer) httpServletRequest.getAttribute("user_id"));
         stadiumsRepository.save(newStadium);
         return ResponseEntity.status(HttpStatus.OK).body(toStadiumDetails(newStadium));
     }
@@ -76,7 +75,6 @@ public class StadiumsApiController implements StadiumsApi {
         }
         StadiumEntity newStadium = toStadiumEntity(stadium);
         stadiumsRepository.findById(stadiumId).orElseThrow(() -> new NotFoundException(404, "The stadium ID : " + stadiumId + " doesn't exist on the database."));
-        newStadium.setUserId((Integer) httpServletRequest.getAttribute("user_id"));
         newStadium.setId(stadiumId);
         stadiumsRepository.save(newStadium);
         return ResponseEntity.status(HttpStatus.OK).build();

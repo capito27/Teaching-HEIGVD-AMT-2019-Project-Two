@@ -7,5 +7,4 @@ import java.util.List;
 
 
 public interface TeamsRepository extends CrudRepository<TeamEntity, Integer>{
-    List<TeamEntity> findAllByUserId(int userId);
 }

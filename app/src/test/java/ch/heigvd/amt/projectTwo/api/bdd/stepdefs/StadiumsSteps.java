@@ -16,7 +16,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class StadiumsSteps extends AbstractSteps implements En {
-    private String authorization = "";
+    private String authorization="";
     private Integer stadiumAdded;
 
     @Autowired
@@ -25,6 +25,18 @@ public class StadiumsSteps extends AbstractSteps implements En {
     private String stadiumsUrl = "/api/app/stadiums";
 
     public StadiumsSteps() {
+        Given("user is authentified with mail \"([^\"]*)\" and id \"(\\d+)\"", (String mail, Integer id) -> {
+            // initial request, reset context
+            testContext().reset();
+            this.authorization = provider.createTestToken(mail, false, id);
+        });
+
+        Given("admin is authentified with mail \"([^\"]*)\" and id \"(\\d+)\"", (String mail, Integer id) -> {
+            // initial request, reset context
+            testContext().reset();
+            this.authorization = provider.createTestToken(mail, true, id);
+        });
+
         When("^user get stadiums$", () -> {
             // Due to the large number of stadiums, we can't display them all, so we don't log the body of the response
             setDisplayFullBodyLog(false);
@@ -45,7 +57,6 @@ public class StadiumsSteps extends AbstractSteps implements En {
             Response response = testContext().getResponse();
             StadiumDetails added = response.getBody().as(StadiumDetails.class);
             stadiumAdded = added.getId();
-            super.testContext().setPayload(added);
             executeDelete(stadiumsUrl + "/" + stadiumAdded, this.authorization);
             Response deleteResponse = testContext().getResponse();
             assertThat(deleteResponse.getStatusCode() == 200);
