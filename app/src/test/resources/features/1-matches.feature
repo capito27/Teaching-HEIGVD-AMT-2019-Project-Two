@@ -25,10 +25,13 @@ Feature: Matches
 
   Scenario: can update a match if authenticated
     Given user is authenticated with mail "filipe@mail.co" and id "2"
-    When user update match 5 with the following attributes
+    When user get matches
+    And user update match 5 with the following attributes
       | team1   | score1 | team2  | score2 | location |
       | /teams/2 | 2  | /teams/3  | 4      | /stadiums/5|
     Then the request 'IS SUCCESSFUL'
+      # this is to MANUALLY ensure that when we update a match, the cache gets properly evicted
+    Then we can get matches
 
   Scenario: can't add a match if unauthenticated
     When user add match with following attributes
