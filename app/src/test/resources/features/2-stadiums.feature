@@ -5,7 +5,7 @@ Feature: Stadiums
     Then the request 'FAILS'
 
   Scenario: can get the stadiums list if authenticated
-    Given user is authentified with mail "filipe@mail.co" and id "1"
+    Given user is authenticated with mail "filipe@mail.co" and id "2"
     When user get stadiums
     Then the request 'IS SUCCESSFUL'
     Then response is not empty
@@ -17,14 +17,14 @@ Feature: Stadiums
     Then the request 'FAILS'
 
   Scenario: can't update the stadium if authenticated but not admin
-    Given user is authentified with mail "filipe@mail.co" and id "1"
+    Given user is authenticated with mail "filipe@mail.co" and id "2"
     When user update stadium 1 with the following attributes
       | name   | location | numberOfPlaces  |
       | Parc des princes | Switzerland  | 25000 |
     Then the request 'FAILS'
 
   Scenario: can update a stadium if authenticated and admin
-    Given admin is authentified with mail "admin@mail.co" and id "2"
+    Given admin is authenticated with mail "admin@mail.co" and id "1"
     When user update stadium 1 with the following attributes
       | name   | location | numberOfPlaces  |
       | Parc des princes | Switzerland  | 25000 |
@@ -37,14 +37,14 @@ Feature: Stadiums
     Then the request 'FAILS'
 
   Scenario: can't add the stadium if authenticated but not admin
-    Given user is authentified with mail "filipe@mail.co" and id "1"
+    Given user is authenticated with mail "filipe@mail.co" and id "2"
     When user add stadium with following attributes
       | name   | location | numberOfPlaces  |
       | Parc des princes | Switzerland  | 25000 |
     Then the request 'FAILS'
 
   Scenario: can add a stadium if authenticated and admin
-    Given admin is authentified with mail "admin@mail.co" and id "2"
+    Given admin is authenticated with mail "admin@mail.co" and id "1"
     When user add stadium with following attributes
       | name   | location | numberOfPlaces  |
       | Parc des princes | Switzerland  | 25000 |
