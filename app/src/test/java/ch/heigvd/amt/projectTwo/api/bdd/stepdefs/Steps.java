@@ -157,7 +157,7 @@ public class Steps extends AbstractSteps implements En {
             Response getResponse = testContext().getResponse();
             assertThat(getResponse.getStatusCode() == 200);
         });
-        Then("^we can get matches$", (Integer matchId) -> {
+        Then("^we can get matches$", () -> {
             executeGet(matchesUrl, this.authorization);
         });
     }

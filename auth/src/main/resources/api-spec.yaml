@@ -25,7 +25,7 @@ components:
       properties:
         email:
           type: string
-          example: mickael.bonjour@heig-vd.ch
+          example: user@mail.co
     User:
       allOf:
         - $ref: '#/components/schemas/UserMinimal'
@@ -36,10 +36,10 @@ components:
           properties:
             firstname:
               type: string
-              example: Mickael
+              example: user
             lastname:
               type: string
-              example: Bonjour
+              example: name
     UserLogin:
       allOf:
         - $ref: '#/components/schemas/UserMinimal'
@@ -49,7 +49,7 @@ components:
           properties:
             password:
               type: string
-              example: testPass
+              example: password
     UserFull:
       allOf:
         - $ref: '#/components/schemas/User'
