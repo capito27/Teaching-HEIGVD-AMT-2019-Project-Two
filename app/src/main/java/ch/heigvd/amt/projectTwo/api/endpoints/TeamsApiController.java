@@ -64,10 +64,10 @@ public class TeamsApiController implements TeamsApi {
         if(!(Boolean) httpServletRequest.getAttribute("user_admin")){
             throw new ForbiddenException("You are not an administrator");
         }
-        TeamEntity newTeam = toTeamEntity(team);
         TeamEntity teamInDB = teamsRepository.findById(teamId).orElseThrow(() -> new NotFoundException(404, "The team ID : " + teamId + " doesn't exist on the database."));
-        newTeam.setId(teamId);
-        teamsRepository.save(newTeam);
+        teamInDB.setCountry(team.getCountry());
+        teamInDB.setName(team.getName());
+        teamsRepository.save(teamInDB);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

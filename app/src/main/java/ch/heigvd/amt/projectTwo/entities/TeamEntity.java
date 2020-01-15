@@ -2,11 +2,13 @@ package ch.heigvd.amt.projectTwo.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
+import com.google.common.collect.Sets;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 
 @Data
 @Entity
@@ -19,9 +21,16 @@ public class TeamEntity implements Serializable {
     private String name;
     private String country;
 
-    /*@OneToMany(mappedBy = "team1", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MatchEntity> matches1 = new ArrayList<>();
+    @Getter(AccessLevel.NONE)
+    @OneToMany(mappedBy = "team1", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Set<MatchEntity> matches1 = new HashSet<>();
 
-    @OneToMany(mappedBy ="team2",cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MatchEntity> matches2 = new ArrayList<>();*/
+    @Getter(AccessLevel.NONE)
+    @OneToMany(mappedBy ="team2",cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Set<MatchEntity> matches2 = new HashSet<>();
+
+    // Returns immutable set containing all matches
+    public Set<MatchEntity> matches(){
+        return Sets.union(matches1, matches2);
+    }
 }

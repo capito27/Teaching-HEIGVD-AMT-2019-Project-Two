@@ -14,10 +14,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class Steps extends AbstractSteps implements En {
-    private String authorization="";
-    private Integer stadiumAdded;
-    private Integer teamAdded;
-    private Integer matchAdded;
+    private String authorization = "";
+    private StadiumDetails stadiumAdded;
+    private TeamDetails teamAdded;
+    private MatchDetails matchAdded;
 
     @Autowired
     private JwtTokenProvider provider;
@@ -43,9 +43,7 @@ public class Steps extends AbstractSteps implements En {
             executeGet(matchesUrl, this.authorization);
         });
 
-        When("^user update match (\\d+) with the following attributes$", (Integer matchId, DataTable matchDt) ->
-
-        {
+        When("^user update match (\\d+) with the following attributes$", (Integer matchId, DataTable matchDt) -> {
             List<Match> matchList = matchDt.asList(Match.class);
             super.testContext().setPayload(matchList.get(0));
             Logger logger = LoggerFactory.getLogger(Steps.class);
@@ -54,10 +52,7 @@ public class Steps extends AbstractSteps implements En {
             executePut(matchesUrl + "/" + matchId, this.authorization);
         });
         Then("^we can cancel this match$", () -> {
-            Response response = testContext().getResponse();
-            MatchDetails added = response.getBody().as(MatchDetails.class);
-            matchAdded = added.getId();
-            super.testContext().setPayload(added);
+            super.testContext().setPayload(matchAdded);
             executePost(cancellationsUrl, this.authorization);
             Response deleteResponse = testContext().getResponse();
             assertThat(deleteResponse.getStatusCode() == 200);
@@ -66,16 +61,19 @@ public class Steps extends AbstractSteps implements En {
             List<Match> matchList = matchDt.asList(Match.class);
             super.testContext().setPayload(matchList.get(0));
             executePost(matchesUrl, this.authorization);
+
+            Response response = testContext().getResponse();
+            // If we were able to add ,then we store it
+            if (response.getStatusCode() >= 200 && response.getStatusCode() < 300)
+                matchAdded = response.getBody().as(MatchDetails.class);
         });
 
         When("^user get match (\\d+)$", (Integer matchId) -> {
             executeGet(matchesUrl + "/" + matchId, this.authorization);
         });
+
         Then("^we can get this match$", () -> {
-            Response response = testContext().getResponse();
-            MatchDetails added = response.getBody().as(MatchDetails.class);
-            matchAdded = added.getId();
-            executeGet(matchesUrl + "/" + matchAdded, this.authorization);
+            executeGet(matchesUrl + "/" + matchAdded.getId(), this.authorization);
             Response getResponse = testContext().getResponse();
             assertThat(getResponse.getStatusCode() == 200);
         });
@@ -94,10 +92,7 @@ public class Steps extends AbstractSteps implements En {
             executePut(stadiumsUrl + "/" + stadiumId, this.authorization);
         });
         Then("^we can delete this stadium$", () -> {
-            Response response = testContext().getResponse();
-            StadiumDetails added = response.getBody().as(StadiumDetails.class);
-            stadiumAdded = added.getId();
-            executeDelete(stadiumsUrl + "/" + stadiumAdded, this.authorization);
+            executeDelete(stadiumsUrl + "/" + stadiumAdded.getId(), this.authorization);
             Response deleteResponse = testContext().getResponse();
             assertThat(deleteResponse.getStatusCode() == 200);
         });
@@ -105,16 +100,18 @@ public class Steps extends AbstractSteps implements En {
             List<Stadium> stadiumList = stadiumDt.asList(Stadium.class);
             super.testContext().setPayload(stadiumList.get(0));
             executePost(stadiumsUrl, this.authorization);
+
+            Response response = testContext().getResponse();
+            // If we were able to add ,then we store it
+            if (response.getStatusCode() >= 200 && response.getStatusCode() < 300)
+                stadiumAdded = response.getBody().as(StadiumDetails.class);
         });
 
         When("^user get stadium (\\d+)$", (Integer stadiumId) -> {
             executeGet(stadiumsUrl + "/" + stadiumId, this.authorization);
         });
         Then("^we can get this stadium$", () -> {
-            Response response = testContext().getResponse();
-            StadiumDetails added = response.getBody().as(StadiumDetails.class);
-            stadiumAdded = added.getId();
-            executeGet(stadiumsUrl + "/" + stadiumAdded, this.authorization);
+            executeGet(stadiumsUrl + "/" + stadiumAdded.getId(), this.authorization);
             Response getResponse = testContext().getResponse();
             assertThat(getResponse.getStatusCode() == 200);
         });
@@ -133,10 +130,7 @@ public class Steps extends AbstractSteps implements En {
             executePut(teamsUrl + "/" + teamId, this.authorization);
         });
         Then("^we can delete this team$", () -> {
-            Response response = testContext().getResponse();
-            TeamDetails added = response.getBody().as(TeamDetails.class);
-            teamAdded = added.getId();
-            executeDelete(teamsUrl + "/" + teamAdded, this.authorization);
+            executeDelete(teamsUrl + "/" + teamAdded.getId(), this.authorization);
             Response deleteResponse = testContext().getResponse();
             assertThat(deleteResponse.getStatusCode() == 200);
         });
@@ -144,16 +138,18 @@ public class Steps extends AbstractSteps implements En {
             List<Team> teamList = teamDt.asList(Team.class);
             super.testContext().setPayload(teamList.get(0));
             executePost(teamsUrl, this.authorization);
+
+            Response response = testContext().getResponse();
+            // If we were able to add ,then we store it
+            if (response.getStatusCode() >= 200 && response.getStatusCode() < 300)
+                teamAdded = response.getBody().as(TeamDetails.class);
         });
 
         When("^user get team (\\d+)$", (Integer teamId) -> {
             executeGet(teamsUrl + "/" + teamId, this.authorization);
         });
         Then("^we can get this team$", () -> {
-            Response response = testContext().getResponse();
-            TeamDetails added = response.getBody().as(TeamDetails.class);
-            teamAdded = added.getId();
-            executeGet(teamsUrl + "/" + teamAdded, this.authorization);
+            executeGet(teamsUrl + "/" + teamAdded.getId(), this.authorization);
             Response getResponse = testContext().getResponse();
             assertThat(getResponse.getStatusCode() == 200);
         });

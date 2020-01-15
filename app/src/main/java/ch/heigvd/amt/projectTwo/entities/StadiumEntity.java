@@ -21,6 +21,6 @@ public class StadiumEntity implements Serializable {
     @Column(name = "places")
     private int numberOfPlaces;
 
-    /*@OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MatchEntity> matches = new ArrayList<>();*/
+    @OneToMany(mappedBy = "location", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<MatchEntity> matches = new ArrayList<>();
 }

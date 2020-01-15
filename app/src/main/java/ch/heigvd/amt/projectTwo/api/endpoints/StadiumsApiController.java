@@ -50,7 +50,7 @@ public class StadiumsApiController implements StadiumsApi {
 
     @Override
     public ResponseEntity<StadiumDetails> addStadium(@Valid Stadium stadium) throws ForbiddenException {
-        if(!(Boolean) httpServletRequest.getAttribute("user_admin")){
+        if (!(Boolean) httpServletRequest.getAttribute("user_admin")) {
             throw new ForbiddenException("You are not an administrator");
         }
         StadiumEntity newStadium = toStadiumEntity(stadium);
@@ -60,7 +60,7 @@ public class StadiumsApiController implements StadiumsApi {
 
     @Override
     public ResponseEntity<Void> deleteStadium(Integer stadiumId) throws NotFoundException, ForbiddenException {
-        if(!(Boolean) httpServletRequest.getAttribute("user_admin")){
+        if (!(Boolean) httpServletRequest.getAttribute("user_admin")) {
             throw new ForbiddenException("You are not an administrator");
         }
         StadiumEntity stadiumToDelete = stadiumsRepository.findById(stadiumId).orElseThrow(() -> new NotFoundException(404, "The stadium ID : " + stadiumId + " doesn't exist on the database."));
@@ -70,13 +70,14 @@ public class StadiumsApiController implements StadiumsApi {
 
     @Override
     public ResponseEntity<Void> updateStadium(Integer stadiumId, @Valid Stadium stadium) throws NotFoundException, ForbiddenException {
-        if(!(Boolean) httpServletRequest.getAttribute("user_admin")){
+        if (!(Boolean) httpServletRequest.getAttribute("user_admin")) {
             throw new ForbiddenException("You are not an administrator");
         }
-        StadiumEntity newStadium = toStadiumEntity(stadium);
-        stadiumsRepository.findById(stadiumId).orElseThrow(() -> new NotFoundException(404, "The stadium ID : " + stadiumId + " doesn't exist on the database."));
-        newStadium.setId(stadiumId);
-        stadiumsRepository.save(newStadium);
+        StadiumEntity stadiumInDB = stadiumsRepository.findById(stadiumId).orElseThrow(() -> new NotFoundException(404, "The stadium ID : " + stadiumId + " doesn't exist on the database."));
+        stadiumInDB.setLocation(stadium.getLocation());
+        stadiumInDB.setName(stadium.getName());
+        stadiumInDB.setNumberOfPlaces(stadium.getNumberOfPlaces());
+        stadiumsRepository.save(stadiumInDB);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
