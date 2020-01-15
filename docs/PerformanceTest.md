@@ -22,7 +22,7 @@ We can see that the server sometimes handles the requests in seconds. We can see
 Before having such a nice time we had some difficulties. In fact, we had this kind of performances before enabling caching in DB side.
 
 Using JMeter to simulate 20 users, making 100 requests each (20'000 total). And we added a gaussian random timer between each request, with a constant delay of 200ms, and 100ms Standard deviation. The pagesize choosen was 100 (/api/app/matches?page=1&pageSize=100).
-![No cache in DB](./assets/responseTImepagin100_nocache.png)
+![No cache in DB](assets/responseTImePagin100_nocache.png)
 These performances are impressive, we were at 700ms in average to like 8 - 10ms.
 
 ## Conclusion
