@@ -8,14 +8,6 @@ info:
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-tags:
-  - name: unauth
-    description: Operations open to all
-  - name: users
-    description: Operations available to regular users
-  - name: admins
-    description: Secured Admin-only calls
-
 components:
   schemas:
     UserMinimal:
@@ -25,7 +17,7 @@ components:
       properties:
         email:
           type: string
-          example: mickael.bonjour@heig-vd.ch
+          example: user@mail.co
     User:
       allOf:
         - $ref: '#/components/schemas/UserMinimal'
@@ -36,10 +28,10 @@ components:
           properties:
             firstname:
               type: string
-              example: Mickael
+              example: user
             lastname:
               type: string
-              example: Bonjour
+              example: name
     UserLogin:
       allOf:
         - $ref: '#/components/schemas/UserMinimal'
@@ -49,7 +41,7 @@ components:
           properties:
             password:
               type: string
-              example: testPass
+              example: password
     UserFull:
       allOf:
         - $ref: '#/components/schemas/User'
@@ -78,7 +70,7 @@ components:
         - $ref: '#/components/schemas/AdminPasswordChange'
         - type: object
           required:
-             - oldPass
+            - oldPass
           properties:
             oldPass:
               type: string
@@ -99,8 +91,6 @@ components:
 paths:
   /login:
     post:
-      tags:
-        - unauth
       summary: Login to app
       operationId: login
       description: >
@@ -119,8 +109,6 @@ paths:
     put:
       security:
         - bearerAuth: []
-      tags:
-        - users
       summary: Change user pasword
       operationId: changePassword
       requestBody:
@@ -141,8 +129,6 @@ paths:
     get:
       security:
         - bearerAuth: []
-      tags:
-        - users
       summary: Get all users
       operationId: showUsers
       description: >
@@ -165,8 +151,6 @@ paths:
     put:
       security:
         - bearerAuth: []
-      tags:
-        - admins
       summary: Change the password of specified user
       operationId: adminChangePassword
       parameters:
@@ -194,8 +178,6 @@ paths:
     post:
       security:
         - bearerAuth: []
-      tags:
-        - admins
       summary: add a user
       requestBody:
         content:
@@ -205,21 +187,6 @@ paths:
       responses:
         '200':
           description: User created
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-
-  /logout:
-    get:
-      security:
-        - bearerAuth: []
-      tags:
-        - users
-      summary: Revoke token and logout
-      responses:
-        '200':
-          description: User logged out
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '403':

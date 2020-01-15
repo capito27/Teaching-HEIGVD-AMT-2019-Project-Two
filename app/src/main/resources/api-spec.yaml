@@ -8,11 +8,6 @@ info:
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-tags:
-  - name: users
-    description: Operations available to regular users authenticated via JWT Token
-  - name: admins
-    description: Secured Admin-only calls
 components:
   links:
     PaginateMatchRequest:
@@ -121,8 +116,6 @@ components:
 paths:
   /matches:
     get:
-      tags:
-        - users
       security:
         - bearerAuth: []
       summary: Get all matches
@@ -168,8 +161,6 @@ paths:
         '403':
           $ref: '#/components/responses/ForbiddenError'
     post:
-      tags:
-        - users
       security:
         - bearerAuth: []
       summary: Add a new match
@@ -197,8 +188,6 @@ paths:
 
   /stadiums:
     get:
-      tags:
-        - users
       security:
         - bearerAuth: []
       summary: Get all stadiums
@@ -219,8 +208,6 @@ paths:
         '403':
           $ref: '#/components/responses/ForbiddenError'
     post:
-      tags:
-        - admins
       security:
         - bearerAuth: []
       summary: Add a new stadium
@@ -245,8 +232,6 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
   /teams:
     get:
-      tags:
-        - users
       security:
         - bearerAuth: []
       summary: Get all teams
@@ -267,8 +252,6 @@ paths:
         '403':
           $ref: '#/components/responses/ForbiddenError'
     post:
-      tags:
-        - admins
       security:
         - bearerAuth: []
       summary: Add a new team
@@ -294,8 +277,6 @@ paths:
 
   /matches/{matchId}:
     get:
-      tags:
-        - users
       security:
         - bearerAuth: []
       operationId: getMatchById
@@ -320,8 +301,6 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundError'
     put:
-      tags:
-        - users
       security:
         - bearerAuth: []
       operationId: updateMatch
@@ -349,8 +328,6 @@ paths:
 
   /teams/{teamId}:
     get:
-      tags:
-        - users
       security:
         - bearerAuth: []
       operationId: getTeamById
@@ -375,8 +352,6 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundError'
     put:
-      tags:
-        - admins
       security:
         - bearerAuth: []
       operationId: updateTeam
@@ -403,8 +378,6 @@ paths:
           $ref: '#/components/responses/NotFoundError'
 
     delete:
-      tags:
-        - admins
       security:
         - bearerAuth: []
       operationId: deleteTeam
@@ -427,8 +400,6 @@ paths:
 
   /stadiums/{stadiumId}:
     get:
-      tags:
-        - users
       operationId: getStadiumById
       security:
         - bearerAuth: []
@@ -454,8 +425,6 @@ paths:
           $ref: '#/components/responses/NotFoundError'
 
     delete:
-      tags:
-        - admins
       security:
         - bearerAuth: []
       operationId: deleteStadium
@@ -476,8 +445,6 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundError'
     put:
-      tags:
-        - admins
       security:
         - bearerAuth: []
       operationId: updateStadium
@@ -505,8 +472,6 @@ paths:
 
   /cancellations:
     post:
-      tags:
-        - users
       security:
         - bearerAuth: []
       operationId: deleteMatch
