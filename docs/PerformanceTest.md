@@ -1,7 +1,7 @@
 ## Load Testing
 
 We have done some performance tests of our API. The general settings of the JMeter config may be found at the project root.
-We have a login request before each round of iteration and added some HTTP Headers controllers to have the token in each request.
+We have a login request before each round of iteration and added some HTTP Headers controllers to have the token in each request.test
 
 ### 1 million entries
 
