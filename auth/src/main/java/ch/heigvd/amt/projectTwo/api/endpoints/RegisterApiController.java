@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.net.URI;
 
 @Controller
 public class RegisterApiController implements RegisterApi {
@@ -39,7 +41,11 @@ public class RegisterApiController implements RegisterApi {
         UserEntity newUser = userFullToUserEntity(userFull);
         userRepository.save(newUser);
         logger.info("Created new user with mail : " + newUser.getEmail() + " and ID : " + newUser.getId());
-        return null;
+        //TODO: URI to change
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/{id}")
+                .buildAndExpand(newUser.getId()).toUri();
+        return ResponseEntity.created(location).build();
     }
 
 

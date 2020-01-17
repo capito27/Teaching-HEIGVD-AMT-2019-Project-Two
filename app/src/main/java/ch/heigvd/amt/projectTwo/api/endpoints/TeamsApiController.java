@@ -16,9 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,7 +58,12 @@ public class TeamsApiController implements TeamsApi {
         }
         TeamEntity newTeam = toTeamEntity(team);
         teamsRepository.save(newTeam);
-        return ResponseEntity.status(HttpStatus.OK).body(toTeamDetails(newTeam));
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/{id}")
+                .buildAndExpand(newTeam.getId()).toUri();
+
+        return ResponseEntity.created(location).body(toTeamDetails(newTeam));
+        //return ResponseEntity.status(HttpStatus.OK).body(toTeamDetails(newTeam));
     }
 
     @Override

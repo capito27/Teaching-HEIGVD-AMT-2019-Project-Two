@@ -16,9 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,7 +57,12 @@ public class StadiumsApiController implements StadiumsApi {
         }
         StadiumEntity newStadium = toStadiumEntity(stadium);
         stadiumsRepository.save(newStadium);
-        return ResponseEntity.status(HttpStatus.OK).body(toStadiumDetails(newStadium));
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/{id}")
+                .buildAndExpand(newStadium.getId()).toUri();
+
+        return ResponseEntity.created(location).body(toStadiumDetails(newStadium));
+        //return ResponseEntity.status(HttpStatus.OK).body(toStadiumDetails(newStadium));
     }
 
     @Override

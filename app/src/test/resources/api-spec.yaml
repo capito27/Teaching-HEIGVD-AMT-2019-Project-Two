@@ -173,7 +173,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Match'
       responses:
-        '200':
+        '201':
           description: Match added
           content:
             application/json:
@@ -220,7 +220,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Stadium'
       responses:
-        '200':
+        '201':
           description: Stadium added
           content:
             application/json:
@@ -264,7 +264,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Team'
       responses:
-        '200':
+        '201':
           description: Team added
           content:
             application/json:
@@ -481,7 +481,7 @@ paths:
             schema:
               $ref: '#/components/schemas/MatchDetails'
       responses:
-        '200':
+        '200i':
           description: The Match is deleted
         '401':
           $ref: '#/components/responses/UnauthorizedError'

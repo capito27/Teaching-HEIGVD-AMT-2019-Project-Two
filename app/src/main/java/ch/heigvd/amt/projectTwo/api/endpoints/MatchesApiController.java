@@ -20,9 +20,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
@@ -99,7 +101,12 @@ public class MatchesApiController implements MatchesApi {
         MatchEntity newMatch = toMatchEntity(match);
         newMatch.setUserId((Integer) httpServletRequest.getAttribute("user_id"));
         matchesRepository.save(newMatch);
-        return ResponseEntity.status(HttpStatus.OK).body(toMatchDetails(newMatch));
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/{id}")
+                .buildAndExpand(newMatch.getId()).toUri();
+
+        return ResponseEntity.created(location).body(toMatchDetails(newMatch));
+        //return ResponseEntity.status(HttpStatus.OK).body(toMatchDetails(newMatch));
     }
 
     @Override
