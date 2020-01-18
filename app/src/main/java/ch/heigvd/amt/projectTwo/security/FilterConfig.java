@@ -26,9 +26,7 @@ public class FilterConfig {
                 "/teams",
                 "/teams/*"
                 );
-
         return registrationBean;
-
     }
 
 }

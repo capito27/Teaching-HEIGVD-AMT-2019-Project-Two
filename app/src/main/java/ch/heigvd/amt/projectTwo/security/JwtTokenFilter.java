@@ -28,7 +28,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         logger.info(token);
         if (token == null || !jwtTokenProvider.validateToken(token)) {
             logger.error("token invalid");
-            httpServletResponse.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Missing, invalid or expired Authorisation");
+            httpServletResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "Missing, invalid or expired Authorisation");
             return;
         }
 
