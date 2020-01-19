@@ -20,6 +20,7 @@ They are located in the `api/endpoints` directory, They are just an override of 
 
 They link the data received from the requests (RTOs) and transform them into entities. That's done with some code that create an entity from the data given. This will help us to talk with the database.
 
+One thing to note is that we didn't have an user entity for the app ressource, we just put an FK_User on the Matches entity. 
 
 #### Access control
 
