@@ -46,6 +46,8 @@ You can log into  the AUTH API with the following default users (`<username>:<pa
 The Auth API definition may be accessed here : http://localhost/api/auth
 The Application API definition may be accessed here : http://localhost/api/app
 
+When testing the routes via swagger-ui don't forget to put `Bearer` before the token given to you at login.
+
 ## Report
 
 ### Design Decisions
