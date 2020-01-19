@@ -50,17 +50,17 @@ The Application API definition may be accessed here : http://localhost/api/app
 
 ### Design Decisions
 
-A list of our design decisions may be found at [the following link](https://github.com/capito27/Teaching-HEIGVD-AMT-2019-Project-One/blob/master/docs/designDecisions.md).
+A list of our design decisions may be found at [the following link](https://github.com/capito27/Teaching-HEIGVD-AMT-2019-Project-Two/blob/master/docs/designDecisions.md).
 
 ### Implementation details
 
-The details of our implementation may be found at [the following link](https://github.com/capito27/Teaching-HEIGVD-AMT-2019-Project-One/blob/master/docs/Implementation.md).
+The details of our implementation may be found at [the following link](https://github.com/capito27/Teaching-HEIGVD-AMT-2019-Project-Two/blob/master/docs/Implementation.md).
 
 ### Testing strategy
 
-Our testing strategy is explicited at [the following link](https://github.com/capito27/Teaching-HEIGVD-AMT-2019-Project-One/blob/master/docs/TestingStrategy.md).
+Our testing strategy is explicited at [the following link](https://github.com/capito27/Teaching-HEIGVD-AMT-2019-Project-Two/blob/master/docs/TestingStrategy.md).
 
 ### Performance experiments
 
-The results of our experiments about data paging may be found at [the following link](https://github.com/capito27/Teaching-HEIGVD-AMT-2019-Project-One/blob/master/docs/PerformanceTest.md).
+The results of our experiments about data paging may be found at [the following link](https://github.com/capito27/Teaching-HEIGVD-AMT-2019-Project-Two/blob/master/docs/PerformanceTest.md).
 
