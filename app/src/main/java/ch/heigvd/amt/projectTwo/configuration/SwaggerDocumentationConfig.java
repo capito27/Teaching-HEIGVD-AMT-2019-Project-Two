@@ -20,8 +20,8 @@ public class SwaggerDocumentationConfig {
 
     ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-            .title("Auth API for AMT Project Two")
-            .description("An API to manage user sessions")
+            .title("Application API for AMT Project Two")
+            .description("An authenticated API to manage sport matches")
             .license("")
             .licenseUrl("http://unlicense.org")
             .termsOfServiceUrl("")
