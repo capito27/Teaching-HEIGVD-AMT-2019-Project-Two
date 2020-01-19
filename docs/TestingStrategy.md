@@ -49,4 +49,4 @@ It was an extreamly easy tool to use, and extremely powerful.
 It was quite the pleasent surprise.
 
 ---
-[Return to the main readme](https://github.com/capito27/Teaching-HEIGVD-AMT-2019-Project-One/blob/master/README.md)
+[Return to the main readme](https://github.com/capito27/Teaching-HEIGVD-AMT-2019-Project-Two/blob/master/README.md)

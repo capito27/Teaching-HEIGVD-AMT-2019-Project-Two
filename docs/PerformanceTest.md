@@ -34,4 +34,4 @@ But with database caching we can see really good improvements.
 We made a lot of small tests that you can see on /assets/test_* but don't comment all of them.
 
 ---
-[Return to the main readme](https://github.com/capito27/Teaching-HEIGVD-AMT-2019-Project-One/blob/master/README.md)
+[Return to the main readme](https://github.com/capito27/Teaching-HEIGVD-AMT-2019-Project-Two/blob/master/README.md)

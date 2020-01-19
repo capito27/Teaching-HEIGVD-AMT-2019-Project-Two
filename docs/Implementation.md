@@ -25,4 +25,4 @@ Nous avons profités des annotations JPA afin de faciliter la représentation de
 
 
 ---
-[Return to the main readme](https://github.com/capito27/Teaching-HEIGVD-AMT-2019-Project-TWO/blob/master/README.md)
+[Return to the main readme](https://github.com/capito27/Teaching-HEIGVD-AMT-2019-Project-Two/blob/master/README.md)

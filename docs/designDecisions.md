@@ -33,4 +33,4 @@ Our integration layer is the repositories implementing CrudRepository to be able
 Our business layer is in our endpoints, because we make the business logic `api/endpoints` and retrieve the responses accordingly. 
 
 ---
-[Return to the main readme](https://github.com/capito27/Teaching-HEIGVD-AMT-2019-Project-One/blob/master/README.md)
+[Return to the main readme](https://github.com/capito27/Teaching-HEIGVD-AMT-2019-Project-Two/blob/master/README.md)
